@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysCustomerRole">
+	
+	
+	<!-- 查出符合条件的全部客户角色信息	-->
+	<select id="queryAllSysCustomerRole"  parameterClass="java.util.Map" resultClass="java.util.HashMap">		
+	            SELECT SCR.SYS_CUSTOMER_ROLE_ID,SCR.SYS_CUSTOMER_ID,SCR.SYS_ROLE_ID,SC.SYS_CUSTOMER_NAME,SR.SYS_ROLE_NAME 
+                  FROM SYS_CUSTOMER_ROLE SCR, SYS_CUSTOMER SC, SYS_ROLE SR
+                 WHERE SCR.SYS_CUSTOMER_ID=SC.SYS_CUSTOMER_ID AND SCR.SYS_ROLE_ID=SR.SYS_ROLE_ID 
+                       <isNotEmpty prepend=" AND " property="sysCustomerId"> SCR.SYS_CUSTOMER_ID=#sysCustomerId#</isNotEmpty>  
+              ORDER BY SYS_CUSTOMER_ROLE_ID
+                 limit #pro_mysql#,#page_record#
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_CUSTOMER_ROLE SCR, SYS_CUSTOMER SC, SYS_ROLE SR
+			          WHERE SCR.SYS_CUSTOMER_ID=SC.SYS_CUSTOMER_ID AND SCR.SYS_ROLE_ID=SR.SYS_ROLE_ID
+        			  <isNotEmpty prepend=" AND " property="sysCustomerId"> SCR.SYS_CUSTOMER_ID=#sysCustomerId#</isNotEmpty>
+	</select>
+	
+	<!-- 删除一条客户角色 -->
+    <delete id="deleteSysCustomerRoleById" parameterClass="String">
+    	DELETE FROM SYS_CUSTOMER_ROLE  WHERE SYS_CUSTOMER_ROLE_ID=#sysCustomerRoleId#
+    </delete>
+	
+	<!-- 根据客户Id查询出此客户未赋权的角色 -->
+	<select id="queryNotSelectedRoleByCustomerId" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT SR.SYS_ROLE_ID,SR.SYS_ROLE_NAME 
+		  FROM SYS_ROLE SR
+		 WHERE SR.SYS_ROLE_ID NOT IN
+		       (SELECT SCR.SYS_ROLE_ID FROM SYS_CUSTOMER_ROLE SCR WHERE SCR.SYS_CUSTOMER_ID=#sysCustomerId#)
+		   AND SR.SYS_STATUS_ID=1
+	</select>
+	
+	<!-- 查询序列值 -->
+	<select id="querySeq" resultClass="String">
+		SELECT nextval('SEQ_SYS_CUSTOMER_ROLE') FROM DUAL
+	</select>
+	
+	<!-- 为某客户赋权新角色 -->
+    <insert id="insertSysCustomerRole" parameterClass="java.util.HashMap">
+    	INSERT INTO SYS_CUSTOMER_ROLE (   
+    	<dynamic>
+    		<isNotEmpty property="sysCustomerRoleId">SYS_CUSTOMER_ROLE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysCustomerId">SYS_CUSTOMER_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleId">SYS_ROLE_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="sysCustomerRoleId"> #sysCustomerRoleId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysCustomerId">#sysCustomerId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleId">#sysRoleId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+	
+	
+</sqlMap> 

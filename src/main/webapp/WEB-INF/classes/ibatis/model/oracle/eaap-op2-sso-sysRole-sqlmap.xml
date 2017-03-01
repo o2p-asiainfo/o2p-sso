@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysRole">
+	
+	<resultMap class="com.ailk.eaap.op2.sso.main.model.SysRole" id="sysRoleMap">
+		<result property="sysRoleId" column="SYS_ROLE_ID" javaType="String"/>
+		<result property="sysRoleName" column="SYS_ROLE_NAME" javaType="String"/>
+		<result property="shownum" column="SHOWNUM" javaType="String"/>
+		<result property="createTime" column="CREATE_TIME" javaType="String"/>
+		<result property="sysStatusId" column="SYS_STATUS_ID" javaType="String"/>
+		<result property="sysStatusName" column="SYS_STATUS_NAME" javaType="String"/>
+	</resultMap>
+	
+	<!-- 查出符合条件的全部角色信息	-->
+	<select id="queryAllSysRole"  parameterClass="java.util.Map" resultMap="sysRoleMap">
+		SELECT * FROM ( SELECT ROWNUM RNUM, SR.SYS_ROLE_ID,SR.SYS_ROLE_NAME,SR.SYS_STATUS_ID,SR.SHOWNUM,to_char(SR.CREATE_TIME,'yyyy-mm-dd hh24:mm:ss') CREATE_TIME,SS.SYS_STATUS_NAME  FROM SYS_ROLE SR 
+           			 LEFT JOIN SYS_STATUS SS ON SR.SYS_STATUS_ID = SS.SYS_STATUS_ID
+         	   where SR.TENANT_ID = #tenantId#
+	                <dynamic>
+		                <isNotEmpty prepend=" AND " property="sysRoleName">SR.SYS_ROLE_NAME LIKE '%' || #sysRoleName# || '%'</isNotEmpty>
+						<isNotEmpty prepend=" AND " property="stateId">SR.SYS_STATUS_ID = #stateId#</isNotEmpty>
+	                </dynamic>
+                ORDER BY SR.SHOWNUM
+                )
+			WHERE RNUM BETWEEN #startRow# AND (#startRow# + #rows# - 1)
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_ROLE SR 
+         	   where SR.TENANT_ID = #tenantId#
+			 <dynamic>
+			    <isNotEmpty prepend=" AND " property="sysRoleName">SR.SYS_ROLE_NAME LIKE '%' || #sysRoleName# || '%'</isNotEmpty>
+				<isNotEmpty prepend=" AND " property="stateId">SR.SYS_STATUS_ID = #stateId#</isNotEmpty>
+			 </dynamic>
+	</select>
+	
+    <!--  查出全部角色信息	-->
+	<select id="queryAll" resultMap="sysRoleMap">
+		SELECT * FROM SYS_ROLE SR 
+		    LEFT JOIN SYS_STATUS SS ON SR.SYS_STATUS_ID=SS.SYS_STATUS_ID
+				WHERE SR.SYS_STATUS_ID=1
+	</select>
+	
+    <!-- 根据sysRoleId 查询角色表 -->	
+    <select id="querySysRoleById"  parameterClass="String" resultMap="sysRoleMap">
+		SELECT SR.SYS_ROLE_ID,SR.SYS_ROLE_NAME,SR.SYS_STATUS_ID,SR.SHOWNUM,SR.CREATE_TIME,SS.SYS_STATUS_NAME  FROM SYS_ROLE SR 
+        	LEFT JOIN SYS_STATUS SS ON SR.SYS_STATUS_ID = SS.SYS_STATUS_ID
+				WHERE SR.SYS_ROLE_ID=#sysRoleId#
+	</select>
+	
+	<!-- 判断新添加角色名称是否存在 -->
+	<select id="isRoleExist" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_ROLE 
+		<dynamic prepend= " WHERE ">
+			<isNotEmpty prepend=" AND " property="sysRoleName">SYS_ROLE_NAME = #sysRoleName#</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 查询出角色的排序号 -->
+	<select id="queryShownum" resultClass="String">
+		SELECT MAX(SHOWNUM)+1 FROM SYS_ROLE
+	</select>
+	<!-- 插入新的角色 -->
+    <insert id="insertSysRole" parameterClass="java.util.HashMap">
+    	<selectKey resultClass="String" keyProperty="sysRoleId">
+			SELECT SEQ_SYS_ROLE.NEXTVAL FROM DUAL
+	 	</selectKey>
+	 	
+    	INSERT INTO SYS_ROLE (TENANT_ID
+    	<dynamic>
+    		<isNotEmpty property="sysRoleId">SYS_ROLE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleName">SYS_ROLE_NAME</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">SYS_STATUS_ID</isNotEmpty>
+			,CREATE_TIME, SHOWNUM
+    	</dynamic>
+    	) VALUES (#tenantId#
+    	<dynamic>
+    		<isNotEmpty property="sysRoleId"> #sysRoleId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleName">#sysRoleName#</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">#stateId#</isNotEmpty>
+			, SYSDATE
+			<isNotEmpty prepend="," property="shownum">#shownum#</isNotEmpty>
+			<isEmpty prepend="," property="shownum">1</isEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    
+    <!-- 删除 -->
+    <delete id="deleteSysRoleById" parameterClass="String">
+    	DELETE FROM SYS_ROLE SR WHERE SR.SYS_ROLE_ID=#sysRoleId#
+    </delete>
+    
+    <!-- 修改 -->
+    <update id="updateSysRoleById" parameterClass="java.util.HashMap">
+    	UPDATE SYS_ROLE   
+    	<dynamic prepend="SET">
+    		<isNotEmpty prepend=" ," property="sysRoleName"> SYS_ROLE_NAME = #sysRoleName#</isNotEmpty>
+			<isNotEmpty prepend=" ," property="shownum"> SHOWNUM = #shownum#</isNotEmpty>
+			<isNotEmpty prepend=" ," property="stateId"> SYS_STATUS_ID = #stateId# </isNotEmpty>
+    	</dynamic> 
+    	WHERE  SYS_ROLE_ID=#sysRoleId#
+    </update>
+</sqlMap> 

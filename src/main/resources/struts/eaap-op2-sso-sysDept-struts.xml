@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+	
+<struts>
+	<package name="sysDept" extends="default" namespace="/sysDept">
+		<action name="showSysDept" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="preShow">
+			<result name="success">/department/deptManage.jsp</result>
+		</action>
+		<action name="showAddSysDept" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="preAdd">
+			<result name="success">/department/deptAdd.jsp</result>
+		</action>
+		<action name="isDeptExist" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="isDeptExist">
+		</action>
+		<action name="addSysDept" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="addSysDept">
+			<result name="success" type="redirectAction">
+				<param name="actionName">showSysDept</param>
+			</result>
+		</action>
+		<action name="deleteSysDept" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="deleteSysDept">
+		</action>
+		<action name="showUpdateSysDept" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="preUpdate">
+			<result name="success">/department/deptUpdate.jsp</result>
+		</action>
+		<action name="isUpdateDeptExist" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="isUpdateDeptExist">
+		</action>
+		<action name="updateSysDept" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="updateSysDept">
+			<result name="success" type="redirectAction">
+				<param name="actionName">showSysDept</param>
+			</result>
+		</action>
+	</package>
+	
+</struts>

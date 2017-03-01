@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<!-- Ibstis 自带数据库制配置
+	<properties resource="jdbc.properties"/>
+	 -->
+  	<!-- debug环境下，将其设为false. 正式运行时应设为true,启用缓存 -->
+	<settings cacheModelsEnabled="false" enhancementEnabled="true" useStatementNamespaces="true" 
+				maxSessions="64" maxTransactions="15" maxRequests="128" />
+    <sqlMap resource="ibatis/o2pCommonsCache.xml" />
+  	<!-- LRU型cache样例 -->
+  	<!--当Cache达到预定设定的最大容量时，按照最少使用的原则将使用频率最少的对象从缓存中清除
+	<cacheModel id="userCache" type="LRU">
+	   <flushInterval hours="24"/>
+	   <flushOnExecute statement="updateUser"/>
+	   <property name="size" value="1000"/>
+	</cacheModel>
+	-->
+  	<!-- FIFO型cache样例 -->
+  	<!--先进先出型缓存，最先放入Cache中的数据将最先废除
+	<cacheModel id="userCache" type="FIFO">
+	   <flushInterval hours="24"/>
+	   <flushOnExecute statement="updateUser"/>
+	   <property name="size" value="1000"/>
+	</cacheModel>
+	-->
+  	<!-- OSCache样例 -->
+  	<!--OSCache来自第三方组织Opensymphony,拥有自己的配置文件oscache.properites,支持多机负载均衡
+	<cacheModel id="userCache" type="OSCACHE">
+	   <flushInterval hours="24"/>
+	   <flushOnExecute statement="updateUser"/>
+	   <property name="size" value="1000"/>
+	</cacheModel>
+	-->
+ 	<!-- <transactionManager type="JDBC">
+    	<dataSource type="SIMPLE"> -->
+          	<!-- Oracle-->	
+<!--    		<property name="JDBC.Driver" value="oracle.jdbc.driver.OracleDriver"/>-->
+<!--			<property name="JDBC.ConnectionURL" value="jdbc:oracle:thin:@10.6.0.12:1521:opdb"/>-->
+<!--			<property name="JDBC.Username" value="op2_sm"/>-->
+<!--			<property name="JDBC.Password" value="op2_sm"/>-->
+
+<!--			<property name="JDBC.Driver" value="oracle.jdbc.driver.OracleDriver"/>-->
+<!--			<property name="JDBC.ConnectionURL" value="jdbc:oracle:thin:@10.1.6.16:1521:depdb"/>-->
+<!--			<property name="JDBC.Username" value="xrbsm"/>-->
+<!--			<property name="JDBC.Password" value="xrbsm"/>-->
+			
+			
+<!--			<property name="JDBC.Driver" value="oracle.jdbc.driver.OracleDriver"/>-->
+<!--			<property name="JDBC.ConnectionURL" value="jdbc:oracle:thin:@10.1.5.22:1521:eopdb"/>-->
+<!--			<property name="JDBC.Username" value="xrbsm"/>-->
+<!--			<property name="JDBC.Password" value="xrbsm"/>-->
+
+<!--			<property name="JDBC.Username" value="op2_sm"/>-->
+<!--			<property name="JDBC.Password" value="op2_sm"/>-->
+
+			<!-- MySql -->
+	<!-- 		<property name="JDBC.Driver" value="com.mysql.jdbc.Driver"/>
+			<property name="JDBC.ConnectionURL" value="jdbc:mysql://192.168.1.53:3306/op2_sm"/>
+			<property name="JDBC.Username" value="op2_sm"/>
+			<property name="JDBC.Password" value="odc"/>
+
+			<property name="Pool.MaximumActiveConnections" value="200"/>
+			<property name="Pool.MaximumIdleConnections" value="20"/>
+			<property name="Pool.MaximumCheckoutTime" value="120000"/>
+			<property name="Pool.TimeToWait" value="500"/>
+			<property name="Pool.PingEnabled" value="false"/>
+			<property name="Pool.PingConnectionsOlderThan" value="1"/>
+			<property name="Pool.PingConnectionsNotUsedFor" value="1"/>
+    	</dataSource>
+  	</transactionManager> -->
+ 	
+
+  <!-- 	<sqlMap resource="ibatis/eaap-op2-sso-main-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/eaap-op2-sso-menu-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysPerson-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysArea-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysDept-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysCustomer-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysFunction-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysRole-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysRoleFunction-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysCustomerRole-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysDeptRole-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysPersonRight-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysBusinessSystem-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-msgAuth-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysLogLogin-sqlmap.xml"/>
+  	<sqlMap resource="ibatis/model/eaap-op2-sso-sysLogOperate-sqlmap.xml"/> -->
+  	<!--
+ 	<sqlMap resource="com/linkage/npsoa/dao/ALARM_LOG_SqlMap.xml"/>
+	-->
+  	
+</sqlMapConfig>

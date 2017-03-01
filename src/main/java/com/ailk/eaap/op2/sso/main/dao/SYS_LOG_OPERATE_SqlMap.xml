@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SysLogOperate" >
+  <resultMap id="map_SysLogOperateResult" class="com.linkage.npsoa.model.SysLogOperate" >
+    <result column="SYS_LOG_OPERATE_ID" property="sysLogOperateId" jdbcType="DECIMAL" />
+    <result column="SYS_PERSON_ID" property="sysPersonId" jdbcType="DECIMAL" />
+    <result column="FUNCTION_ID" property="functionId" jdbcType="DECIMAL" />
+    <result column="CLASS_NAME" property="className" jdbcType="VARCHAR" />
+    <result column="METHOD_NAME" property="methodName" jdbcType="VARCHAR" />
+    <result column="PARAM_NAME" property="paramName" jdbcType="VARCHAR" />
+    <result column="OPERATE_TIME" property="operateTime" jdbcType="TIMESTAMP" />
+    
+  	<result column="SQL_EXPR" property="sqlExpr" jdbcType="VARCHAR" />
+    <result column="OP_DESC" property="opDesc" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="map_SysLogOperateResult2" class="com.linkage.npsoa.model.SysLogOperate" >
+    <result column="SYS_LOG_OPERATE_ID" property="sysLogOperateId" jdbcType="DECIMAL" />
+    <result column="SYS_PERSON_ID" property="sysPersonId" jdbcType="DECIMAL" />
+    <result column="name" property="sysPersonName" jdbcType="VARCHAR" />
+    <result column="CLASS_NAME" property="className" jdbcType="VARCHAR" />
+    <result column="METHOD_NAME" property="methodName" jdbcType="VARCHAR" />
+    <result column="PARAM_NAME" property="paramName" jdbcType="VARCHAR" />
+    <result column="OPERATE_TIMES" property="operateTimes" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="map_SysLogOperateResult3" class="com.linkage.npsoa.model.SysLogOperate" >
+    <result column="SYS_LOG_OPERATE_ID" property="sysLogOperateId" jdbcType="DECIMAL" />
+    <result column="card_number" property="cardNumber" jdbcType="DECIMAL" />
+    <result column="name" property="sysPersonName" jdbcType="VARCHAR" />
+    <result column="CLASS_NAME" property="className" jdbcType="VARCHAR" />
+    <result column="METHOD_NAME" property="methodName" jdbcType="VARCHAR" />
+    <result column="OP_SUM" property="opSum" jdbcType="VARCHAR" />
+    <result column="OPERATE_TIMES" property="operateTimes" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <sql id="example_Where_Clause" >
+    <iterate property="oredCriteria" conjunction=") or (" prepend="and" removeFirstPrepend="iterate" open="( (" close=") )" >
+      <iterate prepend="and" property="oredCriteria[].criteriaWithoutValue" conjunction="and" >
+        $oredCriteria[].criteriaWithoutValue[]$
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithSingleValue" conjunction="and" >
+        $oredCriteria[].criteriaWithSingleValue[].condition$
+          #oredCriteria[].criteriaWithSingleValue[].value#
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithOrValue" conjunction="or" open="(" close=")" >
+        $oredCriteria[].criteriaWithOrValue[].condition$
+          #oredCriteria[].criteriaWithOrValue[].value#
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithExistsValue" conjunction="and" >
+        exists ( $oredCriteria[].criteriaWithExistsValue[].condition$
+          #oredCriteria[].criteriaWithExistsValue[].value# )
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithInValue" conjunction="and" >
+        in ( $oredCriteria[].criteriaWithInValue[].condition$
+          #oredCriteria[].criteriaWithInValue[].value# )
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithListValue" conjunction="and" >
+        $oredCriteria[].criteriaWithListValue[].condition$
+        <iterate property="oredCriteria[].criteriaWithListValue[].values" open="(" close=")" conjunction="," >
+          #oredCriteria[].criteriaWithListValue[].values[]#
+        </iterate>
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithBetweenValue" conjunction="and" >
+        $oredCriteria[].criteriaWithBetweenValue[].condition$
+        #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+        #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+      </iterate>
+    </iterate>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="map_SysLogOperateResult" parameterClass="com.linkage.npsoa.model.SysLogOperate" >
+    select t.SYS_LOG_OPERATE_ID, t.SYS_PERSON_ID, t.FUNCTION_ID, t.CLASS_NAME, t.METHOD_NAME,
+      t.PARAM_NAME, t.OPERATE_TIME, t.OP_DESC, t.SQL_EXPR
+    from SYS_LOG_OPERATE t 
+    where t.SYS_LOG_OPERATE_ID = #sysLogOperateId:DECIMAL#
+  </select>
+  <select id="selectByExample" resultMap="map_SysLogOperateResult" parameterClass="com.linkage.npsoa.model.SysLogOperateExample" >
+    select t.SYS_LOG_OPERATE_ID, t.SYS_PERSON_ID, t.FUNCTION_ID, t.CLASS_NAME, t.METHOD_NAME,
+      t.PARAM_NAME, t.OPERATE_TIME
+    from SYS_LOG_OPERATE t  where null is null
+    <isParameterPresent >
+      <include refid="SysLogOperate.example_Where_Clause" />
+      <isNotNull property="orderByClause" >
+        order by $orderByClause$
+      </isNotNull>
+    </isParameterPresent>
+  </select>
+  
+  <!--
+    <select id="selectPageByExample" resultMap="map_SysLogOperateResult2" parameterClass="com.linkage.npsoa.model.SysLogOperateExample" >
+    select SYS_LOG_OPERATE_ID, SYS_PERSON_ID, CLASS_NAME, METHOD_NAME, PARAM_NAME,
+       to_char(OPERATE_TIME,'yyyy-mm-dd hh24:mi:ss') OPERATE_TIMES,name
+    from (select my_table.*,rownum my_rownum from ( select 
+    t.SYS_LOG_OPERATE_ID, t.SYS_PERSON_ID, c.SYS_LOG_CLASS_NAME CLASS_NAME, m.SYS_LOG_METHOD_NAME METHOD_NAME,
+     t.PARAM_NAME, t.OPERATE_TIME,p.name
+      from SYS_LOG_OPERATE t ,sys_person p, sys_log_class c,sys_log_method m 
+      where t.sys_person_id = p.sys_person_id 
+      and t.class_name = c.sys_log_class_code
+      and c.sys_log_class_id = m.sys_log_class_id
+      and t.method_name = m.sys_log_method_code
+      and t.operate_time <![CDATA[>=]]> to_date(#starttime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+       and t.operate_time <![CDATA[<=]]> to_date(#endtime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+     <dynamic prepend="and" >
+     <isNotNull  prepend="and" property="sysPersonId" removeFirstPrepend="true" >
+        t.SYS_PERSON_ID = #sysPersonId:DECIMAL#
+      </isNotNull>
+      <isNotNull  prepend="and" property="name" removeFirstPrepend="true">
+        p.name like  #name:VARCHAR#
+      </isNotNull>
+		</dynamic>
+    ) my_table where rownum  <![CDATA[<=]]> #endPos# ) where my_rownum <![CDATA[>=]]> #startPos# 
+  </select>
+  -->
+  
+  
+  
+  <!--  
+  <select id="selectPageByExample" resultMap="map_SysLogOperateResult2" parameterClass="com.linkage.npsoa.model.SysLogOperateExample" >
+    select SYS_LOG_OPERATE_ID, SYS_PERSON_ID, FUNCTION_ID, CLASS_NAME, METHOD_NAME, PARAM_NAME,
+       to_char(OPERATE_TIME,'yyyy-mm-dd hh24:mi:ss') OPERATE_TIMES,name
+    from (select my_table.*,rownum my_rownum from ( select 
+    t.SYS_LOG_OPERATE_ID, t.SYS_PERSON_ID, t.FUNCTION_ID, t.CLASS_NAME, t.METHOD_NAME, t.PARAM_NAME,
+      t.OPERATE_TIME,p.name from SYS_LOG_OPERATE t ,sys_person p where t.sys_person_id = p.sys_person_id 
+      and t.operate_time <![CDATA[>=]]> to_date(#starttime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+       and t.operate_time <![CDATA[<=]]> to_date(#endtime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+     <dynamic prepend="and" >
+     <isNotNull  prepend="and" property="sysPersonId" removeFirstPrepend="true" >
+        t.SYS_PERSON_ID = #sysPersonId:DECIMAL#
+      </isNotNull>
+      <isNotNull  prepend="and" property="name" removeFirstPrepend="true">
+        p.name like  #name:VARCHAR#
+      </isNotNull>
+		</dynamic>
+    ) my_table where rownum  <![CDATA[<=]]> #endPos# ) where my_rownum <![CDATA[>=]]> #startPos# 
+  </select>
+  -->
+  <select id="selectPageByExample" resultMap="map_SysLogOperateResult3" parameterClass="com.linkage.npsoa.model.SysLogOperateExample" >    
+	 select r.SYS_LOG_OPERATE_ID,r.card_number,r.name,r.CLASS_NAME,r.METHOD_NAME,r.OP_SUM,
+     r.OPERATE_TIMES, OPERATE_TIMES
+     from (
+	 select e.SYS_LOG_OPERATE_ID,e.card_number,e.name,e.CLASS_NAME,e.METHOD_NAME,e.OP_SUM,
+     to_char(e.OPERATE_TIME,'yyyy-mm-dd hh24:mi:ss') OPERATE_TIMES,rownum my_rownum
+     from (
+     select t.SYS_LOG_OPERATE_ID,p.card_number,p.name,c.SYS_LOG_CLASS_NAME CLASS_NAME,
+     m.SYS_LOG_METHOD_NAME METHOD_NAME,t.op_sum, t.OPERATE_TIME
+     from SYS_LOG_OPERATE t ,sys_person p, sys_log_class c,sys_log_method m, sys_function f
+     where t.sys_person_id = p.sys_person_id 
+     and t.class_name = c.sys_log_class_code
+     and c.sys_log_class_id = m.sys_log_class_id
+     and t.method_name = m.sys_log_method_code
+     and f.FUNCTION_ID = t.FUNCTION_ID
+     and m.SYS_LOG_METHOD_NAME != #methodName:VARCHAR#
+     and t.operate_time <![CDATA[>=]]> to_date(#starttime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+     and t.operate_time <![CDATA[<=]]> to_date(#endtime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+     <dynamic prepend="and" >
+     <isNotNull  prepend="and" property="cardNumber" removeFirstPrepend="true" >
+        p.card_number = #cardNumber:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="name" removeFirstPrepend="true">
+        p.name like  #name:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="className" removeFirstPrepend="true">
+        c.SYS_LOG_CLASS_NAME like #className:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="propertyDesc" removeFirstPrepend="true">
+        t.op_sum = #propertyDesc:VARCHAR#
+      </isNotNull>
+	 </dynamic>
+	 
+	 union
+
+     select t.SYS_LOG_OPERATE_ID,p.card_number,p.name,t.model_name CLASS_NAME,
+     t.op_type METHOD_NAME,t.op_sum,t.OPERATE_TIME
+     from SYS_LOG_OPERATE t,sys_person p
+     where t.sys_person_id = p.sys_person_id
+     and t.FUNCTION_ID IS NULL
+     and t.model_name IS NOT NULL
+     and t.op_type is not null
+     and t.operate_time <![CDATA[>=]]> to_date(#starttime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+     and t.operate_time <![CDATA[<=]]> to_date(#endtime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+	 <dynamic prepend="and" >
+     <isNotNull  prepend="and" property="cardNumber" removeFirstPrepend="true" >
+        p.card_number = #cardNumber:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="name" removeFirstPrepend="true">
+        p.name like  #name:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="className" removeFirstPrepend="true">
+        t.model_name like #className:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="propertyDesc" removeFirstPrepend="true">
+        t.op_sum = #propertyDesc:VARCHAR#
+      </isNotNull>
+	 </dynamic>
+	 
+	 
+	) e ) r where r.my_rownum <![CDATA[<=]]> #endPos# and r.my_rownum <![CDATA[>=]]> #startPos#
+  </select>
+  <select id="selectCountByExample" resultClass="java.lang.Integer" parameterClass="com.linkage.npsoa.model.SysLogOperateExample" >
+      select count(SYS_LOG_OPERATE_ID)
+      from 
+      (
+      select t.SYS_LOG_OPERATE_ID from 
+      SYS_LOG_OPERATE t ,sys_person p, sys_log_class c,sys_log_method m ,sys_function f
+      where t.sys_person_id = p.sys_person_id 
+      and t.class_name = c.sys_log_class_code
+      and c.sys_log_class_id = m.sys_log_class_id
+      and t.method_name = m.sys_log_method_code
+      and f.FUNCTION_ID = t.FUNCTION_ID
+      and m.SYS_LOG_METHOD_NAME != #methodName:VARCHAR#
+      and t.operate_time <![CDATA[>=]]> to_date(#starttime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+      and t.operate_time <![CDATA[<=]]> to_date(#endtime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+     <dynamic prepend="and" >
+      <isNotNull  prepend="and" property="cardNumber" removeFirstPrepend="true" >
+        p.card_number = #cardNumber:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="name" removeFirstPrepend="true">
+        p.name like  #name:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="className" removeFirstPrepend="true">
+        c.SYS_LOG_CLASS_NAME like #className:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="propertyDesc" removeFirstPrepend="true">
+        t.op_sum = #propertyDesc:VARCHAR#
+      </isNotNull>
+	 </dynamic>
+	 
+	 union
+
+     select t.SYS_LOG_OPERATE_ID
+     from SYS_LOG_OPERATE t,sys_person p
+     where t.sys_person_id = p.sys_person_id
+     and t.FUNCTION_ID IS NULL
+     and t.model_name IS NOT NULL
+     and t.op_type is not null
+     and t.operate_time <![CDATA[>=]]> to_date(#starttime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+     and t.operate_time <![CDATA[<=]]> to_date(#endtime:VARCHAR#,'yyyy-mm-dd hh24:mi:ss')
+	 <dynamic prepend="and" >
+     <isNotNull  prepend="and" property="cardNumber" removeFirstPrepend="true" >
+        p.card_number = #cardNumber:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="name" removeFirstPrepend="true">
+        p.name like  #name:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="className" removeFirstPrepend="true">
+        t.model_name like #className:VARCHAR#
+      </isNotNull>
+      <isNotNull  prepend="and" property="propertyDesc" removeFirstPrepend="true">
+        t.op_sum = #propertyDesc:VARCHAR#
+      </isNotNull>
+	 </dynamic>
+	 )
+	 
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterClass="com.linkage.npsoa.model.SysLogOperate" >
+    delete from SYS_LOG_OPERATE
+    where SYS_LOG_OPERATE_ID = #sysLogOperateId:DECIMAL#
+  </delete>
+  <delete id="deleteByExample" parameterClass="com.linkage.npsoa.model.SysLogOperateExample" >
+    delete from SYS_LOG_OPERATE t  where null is null
+    <include refid="SysLogOperate.example_Where_Clause" />
+  </delete>
+  <insert id="insert" parameterClass="com.linkage.npsoa.model.SysLogOperate" >
+    <selectKey resultClass="java.lang.Integer" keyProperty="sysLogOperateId" >
+      SELECT SEQ_SYS_LOG_OPERATE.nextval FROM DUAL
+    </selectKey>
+    insert into SYS_LOG_OPERATE (SYS_LOG_OPERATE_ID, SYS_PERSON_ID, FUNCTION_ID, CLASS_NAME,
+      METHOD_NAME, PARAM_NAME, OPERATE_TIME)
+    values (#sysLogOperateId:DECIMAL#, #sysPersonId:DECIMAL#, #functionId:DECIMAL#,
+      #className:VARCHAR#, #methodName:VARCHAR#, #paramName:VARCHAR#, sysdate)
+  </insert>
+  <update id="updateByPrimaryKey" parameterClass="com.linkage.npsoa.model.SysLogOperate" >
+    update SYS_LOG_OPERATE
+    set SYS_PERSON_ID = #sysPersonId:DECIMAL#,
+      FUNCTION_ID = #functionId:DECIMAL#,
+      CLASS_NAME = #className:VARCHAR#,
+      METHOD_NAME = #methodName:VARCHAR#,
+      PARAM_NAME = #paramName:VARCHAR#,
+      OPERATE_TIME = #operateTime:TIMESTAMP#
+    where SYS_LOG_OPERATE_ID = #sysLogOperateId:DECIMAL#
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterClass="com.linkage.npsoa.model.SysLogOperate" >
+    update SYS_LOG_OPERATE
+    <dynamic prepend="set" >
+      <isNotNull prepend="," property="sysPersonId" >
+        SYS_PERSON_ID = #sysPersonId:DECIMAL#
+      </isNotNull>
+      <isNotNull prepend="," property="functionId" >
+        FUNCTION_ID = #functionId:DECIMAL#
+      </isNotNull>
+      <isNotNull prepend="," property="className" >
+        CLASS_NAME = #className:VARCHAR#
+      </isNotNull>
+      <isNotNull prepend="," property="methodName" >
+        METHOD_NAME = #methodName:VARCHAR#
+      </isNotNull>
+      <isNotNull prepend="," property="paramName" >
+        PARAM_NAME = #paramName:VARCHAR#
+      </isNotNull>
+      <isNotNull prepend="," property="operateTime" >
+        OPERATE_TIME = #operateTime:TIMESTAMP#
+      </isNotNull>
+    </dynamic>
+    where SYS_LOG_OPERATE_ID = #sysLogOperateId#
+  </update>
+</sqlMap>

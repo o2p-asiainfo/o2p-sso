@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sysPerson">
+	
+	<resultMap class="com.ailk.eaap.op2.sso.main.model.aSysPerson" id="sysPersonMap">
+		<result property="sysPersonId" column="SYS_PERSON_ID" javaType="Long"/>
+		<result property="name" column="NAME" javaType="String"/>
+		<result property="mobile" column="MOBILE" javaType="String"/>
+		<result property="password" column="PASSWORD" javaType="String"/>
+		<result property="lastPassword" column="LAST_1_PWD" javaType="String"/>
+		<result property="email" column="EMAIL" javaType="String"/>
+		<result property="sysIdTypeId" column="SYS_ID_TYPE_ID" javaType="Long"/>
+		<result property="sysIdTypeName" column="SYS_ID_TYPE_NAME" javaType="String"/>
+		<result property="sysCardTypeId" column="SYS_CARD_TYPE_ID" javaType="Long"/>
+		<result property="sysCardTypeName" column="SYS_CARD_TYPE_NAME" javaType="String"/>
+		<result property="sysAreaId" column="SYS_AREA_ID" javaType="Long"/>
+		<result property="cardNumber" column="CARD_NUMBER" javaType="String"/>
+		<result property="sysUserType" column="SYS_USER_TYPE" javaType="String"/>
+		<result property="sysStatusId" column="SYS_STATUS_ID" javaType="Long"/>
+		<result property="sysStatusName" column="SYS_STATUS_NAME" javaType="String"/>
+		<result property="stateDate" column="STATE_DATE" javaType="String"/>
+		<result property="pwdLastUpTime" column="PWD_LAST_UP_TIME" javaType="String"/>
+		<result property="pwdEffTime" column="PWD_EFF_TIME" javaType="String"/>
+		<result property="tenantId" column="TENANT_ID" javaType="String"/>
+	</resultMap>
+	
+	<!-- 根据工号cardNumber查询员工表 -->
+	<select id="querySysPerson" parameterClass="java.util.Map" resultMap="sysPersonMap">
+		 SELECT * FROM ( SELECT * FROM SYS_PERSON WHERE CARD_NUMBER = #username# AND TENANT_ID=#tenantId# AND SYS_STATUS_ID=1) A
+	         LEFT JOIN SYS_CARD_TYPE B ON A.SYS_CARD_TYPE_ID = B.SYS_CARD_TYPE_ID
+	         LEFT JOIN SYS_STATUS C ON A.SYS_STATUS_ID = C.SYS_STATUS_ID
+	         LEFT JOIN SYS_ID_TYPE D ON A.SYS_ID_TYPE_ID = D.SYS_ID_TYPE_ID
+	</select>
+	
+    <!-- 判断密码是否过期	-->
+    <select id="isPasswordExpire" parameterClass="String" resultClass="int">
+    	SELECT  COUNT(*) FROM SYS_PERSON SP WHERE SP.SYS_PERSON_ID=#sysPersonId# AND SP.PWD_EFF_TIME > SYSDATE()
+    </select>
+	
+	<!-- 根据员工ID修改密码 -->
+	<update id="updatePassword" parameterClass="java.util.Map">
+		UPDATE SYS_PERSON  SET PASSWORD = #newPassWord# , LAST_1_PWD = PASSWORD, PWD_LAST_UP_TIME=SYSDATE(), PWD_EFF_TIME=SYSDATE()+ interval #passwordTimeout# day 
+    	 WHERE SYS_PERSON_ID=#sysPersonId#
+    </update>
+	
+	
+	
+    <!-- 查出符合条件的全部员工信息	-->
+	<select id="queryAllSysPerson"  parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  SELECT SD.DEPT_NAME,SD.DEPT_ID,TT.SYS_PERSON_ID,TT.NAME,TT.MOBILE,TT.SYS_STATUS_ID,TT.SYS_STATUS_NAME,TT.EMAIL,TT.SYS_CARD_TYPE_ID,TT.SYS_CARD_TYPE_NAME,
+	              TT.SYS_ID_TYPE_ID,TT.SYS_ID_TYPE_NAME,TT.CARD_NUMBER,TT.SYS_USER_TYPE,TT.PWD_LAST_UP_TIME,TT.PWD_EFF_TIME,TT.SYS_AREA_ID,TT.SYS_AREA_NAME,TT.CREATE_DATE 
+	         FROM (
+	                SELECT SP.SYS_PERSON_ID,SP.NAME,SP.MOBILE,SP.SYS_STATUS_ID,SS.SYS_STATUS_NAME,SP.EMAIL,SP.SYS_CARD_TYPE_ID,SCT.SYS_CARD_TYPE_NAME,
+	                       SP.SYS_ID_TYPE_ID,SIT.SYS_ID_TYPE_NAME,SP.CARD_NUMBER,SP.SYS_USER_TYPE,DATE_FORMAT(SP.PWD_LAST_UP_TIME,'%Y-%m-%d %H:%i:%s') PWD_LAST_UP_TIME,DATE_FORMAT(SP.PWD_EFF_TIME,'%Y-%m-%d %H:%i:%s') PWD_EFF_TIME,SP.SYS_AREA_ID,SA.SYS_AREA_NAME,DATE_FORMAT(SP.CREATE_DATE,'%Y-%m-%d %H:%i:%s') CREATE_DATE   
+	                  FROM SYS_PERSON SP
+		                  LEFT JOIN SYS_STATUS SS ON SP.SYS_STATUS_ID = SS.SYS_STATUS_ID
+		                  LEFT JOIN SYS_CARD_TYPE SCT ON SP.SYS_CARD_TYPE_ID = SCT.SYS_CARD_TYPE_ID
+		                  LEFT JOIN SYS_ID_TYPE SIT ON SIT.SYS_ID_TYPE_ID = SP.SYS_ID_TYPE_ID
+		                  LEFT JOIN SYS_AREA SA ON SA.SYS_AREA_ID = SP.SYS_AREA_ID 
+	                  WHERE SP.TENANT_ID=#tenantId#
+	                  ) TT 
+            LEFT JOIN SYS_DEPT_PERSON SDP ON TT.SYS_PERSON_ID = SDP.SYS_PERSON_ID
+            LEFT JOIN SYS_DEPT SD ON SDP.DEPT_ID = SD.DEPT_ID 
+            <dynamic prepend= " WHERE "> 
+	          <isNotEmpty prepend=" AND " property="cardNumber"> TT.CARD_NUMBER LIKE concat('%' , #cardNumber# , '%') </isNotEmpty>
+	          <isNotEmpty prepend=" AND " property="name"> TT.NAME LIKE concat('%' , #name# , '%') </isNotEmpty>
+	          <isNotEmpty prepend=" AND " property="mobile"> TT.MOBILE = #mobile#</isNotEmpty>
+	          <isNotEmpty prepend=" AND " property="deptId"> SD.DEPT_ID = #deptId#</isNotEmpty>
+	          <isNotEmpty prepend=" AND " property="sysIdTypeId"> TT.SYS_ID_TYPE_ID = #sysIdTypeId#</isNotEmpty>
+	          <isNotEmpty prepend=" AND " property="sysUserType"> TT.SYS_USER_TYPE = #sysUserType#</isNotEmpty>
+	          <isNotEmpty prepend=" AND " property="stateId"> TT.SYS_STATUS_ID = #stateId#</isNotEmpty>
+	        </dynamic>
+      	    ORDER BY TT.SYS_PERSON_ID
+      	    limit #pro_mysql#,#page_record# 
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_PERSON SP              
+          LEFT JOIN SYS_DEPT_PERSON SDP ON SP.SYS_PERSON_ID = SDP.SYS_PERSON_ID
+          LEFT JOIN SYS_DEPT SD ON SDP.DEPT_ID = SD.DEPT_ID 
+          WHERE SP.TENANT_ID=#tenantId#
+        <dynamic>
+          <isNotEmpty prepend=" AND " property="cardNumber">SP.CARD_NUMBER LIKE concat('%' , #cardNumber# , '%') </isNotEmpty>
+          <isNotEmpty prepend=" AND " property="name">SP.NAME LIKE concat('%' , #name# , '%') </isNotEmpty>
+          <isNotEmpty prepend=" AND " property="mobile">SP.MOBILE = #mobile#</isNotEmpty>
+          <isNotEmpty prepend=" AND " property="deptId">SD.DEPT_ID = #deptId#</isNotEmpty>
+          <isNotEmpty prepend=" AND " property="sysIdTypeId">SP.SYS_ID_TYPE_ID = #sysIdTypeId#</isNotEmpty>
+          <isNotEmpty prepend=" AND " property="sysUserType">SP.SYS_USER_TYPE = #sysUserType#</isNotEmpty>
+          <isNotEmpty prepend=" AND " property="stateId">SP.SYS_STATUS_ID = #stateId#</isNotEmpty>
+        </dynamic>
+	</select>
+	
+    <!-- 根据主键sysPersonId 查询员工表 -->	
+    <select id="querySysPersonById"  parameterClass="String" resultClass="java.util.HashMap">
+		SELECT SD.DEPT_NAME,SD.DEPT_ID,TT.SYS_PERSON_ID,TT.NAME,TT.MOBILE,TT.SYS_STATUS_ID,TT.SYS_STATUS_NAME,TT.EMAIL,TT.SYS_CARD_TYPE_ID,TT.SYS_CARD_TYPE_NAME,
+              TT.SYS_ID_TYPE_ID,TT.SYS_ID_TYPE_NAME,TT.CARD_NUMBER,TT.SYS_USER_TYPE,PWD_LAST_UP_TIME,PWD_EFF_TIME,TT.SYS_AREA_ID,TT.SYS_AREA_NAME,CREATE_DATE 
+         FROM (
+                SELECT SP.SYS_PERSON_ID,SP.NAME,SP.MOBILE,SP.SYS_STATUS_ID,SS.SYS_STATUS_NAME,SP.EMAIL,SP.SYS_CARD_TYPE_ID,SCT.SYS_CARD_TYPE_NAME,
+                       SP.SYS_ID_TYPE_ID,SIT.SYS_ID_TYPE_NAME,SP.CARD_NUMBER,SP.SYS_USER_TYPE,DATE_FORMAT(SP.PWD_LAST_UP_TIME,'%Y-%m-%d %H:%i:%s') PWD_LAST_UP_TIME,DATE_FORMAT(SP.PWD_EFF_TIME,'%Y-%m-%d %H:%i:%s') PWD_EFF_TIME,SP.SYS_AREA_ID,SA.SYS_AREA_NAME,DATE_FORMAT(SP.CREATE_DATE,'%Y-%m-%d %H:%i:%s') CREATE_DATE  
+                  FROM SYS_PERSON SP
+                  LEFT JOIN SYS_STATUS SS ON SP.SYS_STATUS_ID = SS.SYS_STATUS_ID
+                  LEFT JOIN SYS_CARD_TYPE SCT ON SP.SYS_CARD_TYPE_ID = SCT.SYS_CARD_TYPE_ID
+                  LEFT JOIN SYS_ID_TYPE SIT ON SIT.SYS_ID_TYPE_ID = SP.SYS_ID_TYPE_ID
+                  LEFT JOIN SYS_AREA SA ON SA.SYS_AREA_ID = SP.SYS_AREA_ID ) TT 
+         LEFT JOIN SYS_DEPT_PERSON SDP ON TT.SYS_PERSON_ID = SDP.SYS_PERSON_ID
+         LEFT JOIN SYS_DEPT SD ON SDP.DEPT_ID = SD.DEPT_ID 
+        <dynamic prepend= " WHERE ">
+          <isNotEmpty prepend=" AND " property="value">TT.SYS_PERSON_ID = #value#</isNotEmpty>
+        </dynamic>
+	</select>
+	
+	<!-- 判断新添加员工工号是否存在 -->
+	<select id="isPersonExist" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_PERSON  
+		<dynamic prepend= " WHERE ">
+			<isNotEmpty prepend=" AND " property="cardNumber">CARD_NUMBER = #cardNumber#</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 插入一条新员工信息 -->
+    <insert id="insertSysPerson" parameterClass="java.util.HashMap">
+    	<selectKey resultClass="String" keyProperty="sysPersonId">
+			SELECT nextval('SEQ_SYS_PERSON') FROM DUAL
+	 	</selectKey>
+	 	
+    	INSERT INTO SYS_PERSON (   
+    	<dynamic>
+    		<isNotEmpty property="sysPersonId">SYS_PERSON_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="cardNumber">CARD_NUMBER</isNotEmpty>
+    		<isNotEmpty prepend="," property="name">NAME</isNotEmpty>
+    		<isNotEmpty prepend="," property="mobile">MOBILE</isNotEmpty>
+    		<isNotEmpty prepend="," property="email">EMAIL</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysIdTypeId">SYS_ID_TYPE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysCardTypeId">SYS_CARD_TYPE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysAreaId">SYS_AREA_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysUserType">SYS_USER_TYPE</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">SYS_STATUS_ID</isNotEmpty>
+			<isNotEmpty prepend="," property="password">PASSWORD</isNotEmpty>
+		    ,CREATE_DATE, PWD_LAST_UP_TIME
+		    <isNotEmpty prepend="," property="passwordTimeout">PWD_EFF_TIME</isNotEmpty>
+		    <isNotEmpty prepend="," property="tenantId">TENANT_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="sysPersonId"> #sysPersonId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="cardNumber">#cardNumber#</isNotEmpty>
+    		<isNotEmpty prepend="," property="name">#name#</isNotEmpty>
+			<isNotEmpty prepend="," property="mobile">#mobile#</isNotEmpty>
+			<isNotEmpty prepend="," property="email"> #email#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysIdTypeId">#sysIdTypeId#</isNotEmpty>
+			<isNotEmpty prepend="," property="sysCardTypeId">#sysCardTypeId#</isNotEmpty>
+			<isNotEmpty prepend="," property="sysAreaId"> #sysAreaId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysUserType">#sysUserType#</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">#stateId#</isNotEmpty>
+			<isNotEmpty prepend="," property="password">#password#</isNotEmpty>
+			, SYSDATE() ,SYSDATE() 
+			<isNotEmpty prepend="," property="passwordTimeout">SYSDATE()+ interval #passwordTimeout# day</isNotEmpty>
+			<isNotEmpty prepend="," property="tenantId">#tenantId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    <!-- 插入新员工时需要在部门员工表（SYS_DEPT_PERSON）新加一条记录 -->
+    <insert id="insertSysDeptPerson" parameterClass="java.util.HashMap">
+    	<selectKey resultClass="String" keyProperty="sysDeptPersonId">
+    		SELECT nextval('SEQ_SYS_DEPT_PERSON') FROM DUAL
+    	</selectKey>
+    	INSERT INTO SYS_DEPT_PERSON (
+    	<dynamic>
+    		<isNotEmpty property="sysDeptPersonId">SYS_DEPT_PERSON_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysPersonId">SYS_PERSON_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="deptId">DEPT_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="sysDeptPersonId"> #sysDeptPersonId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysPersonId">#sysPersonId#</isNotEmpty>
+			<isNotEmpty prepend="," property="deptId">#deptId#</isNotEmpty>
+		</dynamic>
+		)
+    </insert>
+    
+    <!-- 删除 -->
+    <delete id="deleteSysPersonById" parameterClass="String">
+    	DELETE FROM SYS_PERSON  WHERE SYS_PERSON_ID=#sysPersonId#
+    </delete>
+    <!-- 根据员工ID删除部门员工表记录   -->
+    <delete id="deleteSysDeptPersonByPersonId" parameterClass="String">
+    	DELETE FROM SYS_DEPT_PERSON  WHERE SYS_PERSON_ID=#sysPersonId#
+    </delete>
+    
+    <!-- 修改员工信息 -->
+    <update id="updateSysPersonById" parameterClass="java.util.HashMap">
+    	UPDATE SYS_PERSON   
+    	<dynamic prepend="SET">
+    		<isNotEmpty prepend=" ," property="cardNumber"> CARD_NUMBER = #cardNumber#</isNotEmpty>
+			, NAME = #name#
+			, MOBILE = #mobile# 
+			, EMAIL = #email#
+			<isNotEmpty prepend=" ," property="sysIdTypeId"> SYS_ID_TYPE_ID = #sysIdTypeId#</isNotEmpty>
+			, SYS_CARD_TYPE_ID = #sysCardTypeId# 
+			, SYS_AREA_ID = #sysAreaId# 
+			<isNotEmpty prepend=" ," property="sysUserType"> SYS_USER_TYPE = #sysUserType#</isNotEmpty>
+			<isNotEmpty prepend=" ," property="stateId"> SYS_STATUS_ID = #stateId#</isNotEmpty>
+    	</dynamic> 
+    	WHERE  SYS_PERSON_ID=#sysPersonId#
+    </update>
+    <!-- 修改员工信息时修改部门员工表 -->
+    <update id="updateSysDeptPersonById" parameterClass="java.util.HashMap">
+    	UPDATE SYS_DEPT_PERSON 
+    	<dynamic prepend="SET">
+			<isNotEmpty prepend=" ," property="deptId"> DEPT_ID = #deptId# </isNotEmpty>
+		</dynamic>
+		WHERE  SYS_PERSON_ID=#sysPersonId#
+    </update>
+    
+    <!-- 查询出全部员工信息   超级管理员：查询全部-->
+    <select id="queryAll" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    	SELECT SP.SYS_PERSON_ID,SP.CARD_NUMBER FROM SYS_PERSON SP WHERE SP.SYS_STATUS_ID=1
+    </select>
+    <!-- 根据部门Id查询员工信息   管理员：查询本部门 --> 
+    <select id="queryAllByDeptId" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    	SELECT SP.SYS_PERSON_ID,SP.CARD_NUMBER FROM SYS_PERSON SP,SYS_DEPT SD,SYS_DEPT_PERSON SDP 
+	        WHERE SP.SYS_STATUS_ID=1 
+	          AND SP.SYS_PERSON_ID=SDP.SYS_PERSON_ID
+	          AND SD.DEPT_ID = SDP.DEPT_ID
+	          AND SD.DEPT_ID=#deptId#
+    </select>
+    
+</sqlMap> 

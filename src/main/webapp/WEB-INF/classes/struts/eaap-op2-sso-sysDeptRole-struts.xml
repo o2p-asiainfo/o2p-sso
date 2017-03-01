@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+	
+<struts>
+	<package name="sysDeptRole" extends="default" namespace="/sysDeptRole">
+		<action name="showSysDeptRole" class="com.ailk.eaap.op2.sso.main.action.SysDeptRoleAction" method="preShow">
+			<result name="success">/deptRole/deptRoleManage.jsp</result>
+		</action>
+		<action name="showAddSysDeptRole" class="com.ailk.eaap.op2.sso.main.action.SysDeptRoleAction" method="preAdd">
+			<result name="success">/deptRole/deptRoleAdd.jsp</result>
+		</action>
+		<action name="addSysDeptRole" class="com.ailk.eaap.op2.sso.main.action.SysDeptRoleAction" method="addSysDeptRole">
+			<result name="success" type="redirectAction">
+				<param name="actionName">showSysDeptRole</param>
+			</result>
+		</action>
+		<action name="deleteSysDeptRole" class="com.ailk.eaap.op2.sso.main.action.SysDeptRoleAction" method="deleteSysDeptRole">
+		</action>
+		
+		<!-- 
+		<action name="showUpdateSysRoleFunction" class="com.ailk.eaap.op2.sso.main.action.SysRoleFunctionAction" method="preUpdate">
+			<result name="success">/roleFunction/roleFunctionUpdate.jsp</result>
+		</action>
+		<action name="updateSysRoleFunction" class="com.ailk.eaap.op2.sso.main.action.SysRoleFunctionAction" method="updateSysRoleFunction">
+			<result name="success" type="redirectAction">
+				<param name="actionName">showSysRoleFunction</param>
+			</result>
+		</action>
+		 -->
+	</package>
+	
+</struts>

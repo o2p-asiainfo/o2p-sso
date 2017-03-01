@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="eaap-op2-sso-main">
+	<!-- 展示应用能力 -->
+	<select id="queryMenuInfo" parameterClass="com.ailk.eaap.op2.sso.main.bo.MenuInfo" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfo">
+		<!-- 
+			select '1' menuId, '系统基础管理' menuName,null parentMenuId from dual union all
+			select '2' menuId, '枢纽平台管理' menuName,null parentMenuId from dual union all
+			select '3' menuId, '业务运营报表' menuName,null parentMenuId from dual union all
+			select '4' menuId, '携号转网管理' menuName,null parentMenuId from dual union all
+			select '5' menuId, '开放平台管理' menuName,null parentMenuId from dual union all
+			select '6' menuId, '业务通用稽核' menuName,null parentMenuId from dual union all
+			select '7' menuId, '枢纽容灾管理' menuName,null parentMenuId from dual 
+		-->
+		select sf1.function_id menuId,sf1.url href,sf1.function_name menuName,sf1.parent_function_id parentMenuId from SYS_FUNCTION sf1 where sf1.function_id in( select distinct(sr.function_id) from SYS_RIGHT sr,SYS_FUNCTION sf where sr.function_id=sf.function_id and sr.sys_person_id=#personId# and sf.parent_function_id=#parentMenuId#)
+	
+	</select>
+	
+
+</sqlMap> 

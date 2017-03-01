@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="eaap-op2-sso-main">
+	<!-- 展示应用能力 -->
+	<select id="queryMenuInfo" parameterClass="com.ailk.eaap.op2.sso.main.bo.MenuInfo" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfo">
+		<!-- 
+			select '1' menuId, '系统基础管理' menuName,null parentMenuId from dual union all
+			select '2' menuId, '枢纽平台管理' menuName,null parentMenuId from dual union all
+			select '3' menuId, '业务运营报表' menuName,null parentMenuId from dual union all
+			select '4' menuId, '携号转网管理' menuName,null parentMenuId from dual union all
+			select '5' menuId, '开放平台管理' menuName,null parentMenuId from dual union all
+			select '6' menuId, '业务通用稽核' menuName,null parentMenuId from dual union all
+			select '7' menuId, '枢纽容灾管理' menuName,null parentMenuId from dual 
+		-->
+		select sf1.function_id menuId,sf1.url href,sf1.function_name menuName,sf1.parent_function_id parentMenuId from SYS_FUNCTION sf1 where sf1.function_id in( select distinct(sr.function_id) from SYS_RIGHT sr,SYS_FUNCTION sf where sr.function_id=sf.function_id and sr.sys_person_id=#personId# and sf.parent_function_id=#parentMenuId#)
+	
+	</select>
+	
+	<!-- 菜单展示 -->
+	<select id="queryMenuInfoBO" parameterClass="java.util.HashMap" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfoBO">
+	   SELECT DISTINCT(SF.FUNCTION_ID) menuId, SF.FUNCTION_NAME menuName, SF.URL menuHref, SF.SHOWNUM showNum ,SF.DISPLAY_MODE displayMode        
+	     FROM SYS_FUNCTION SF, SYS_RIGHT SR, SYS_BUSINESS_SYSTEM SBS
+		WHERE SR.SYS_PERSON_ID = #sysPersonId# AND SF.PARENT_FUNCTION_ID = #parentMenuId# AND SBS.BUSINESS_SYSTEM_ID = #businessSystemId#
+		  AND SR.FUNCTION_ID = SF.FUNCTION_ID AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID
+		  AND SF.SYS_STATUS_ID=1 AND SF.TENANT_ID = #tenantId#
+		  ORDER BY SF.SHOWNUM	
+	</select>
+	<select id="queryMenuInfoBOEn" parameterClass="java.util.HashMap" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfoBO">
+	   SELECT DISTINCT(SF.FUNCTION_ID) menuId, SF.FUNCTION_EN_NAME menuName, SF.URL menuHref, SF.SHOWNUM showNum ,SF.DISPLAY_MODE displayMode        
+	     FROM SYS_FUNCTION SF, SYS_RIGHT SR, SYS_BUSINESS_SYSTEM SBS
+		WHERE SR.SYS_PERSON_ID = #sysPersonId# AND SF.PARENT_FUNCTION_ID = #parentMenuId# AND SBS.BUSINESS_SYSTEM_ID = #businessSystemId#
+		  AND SR.FUNCTION_ID = SF.FUNCTION_ID AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID
+		  AND SF.SYS_STATUS_ID=1 AND SF.TENANT_ID = #tenantId#
+		  ORDER BY SF.SHOWNUM	
+	</select>
+	<!-- 菜单展示 -->
+	<select id="queryMenuInfoBO2" parameterClass="java.util.HashMap" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfoBO">
+	   SELECT DISTINCT(SF.FUNCTION_ID) menuId, SF.FUNCTION_NAME menuName, SF.URL menuHref, SF.SHOWNUM showNum ,SF.DISPLAY_MODE displayMode        
+	     FROM SYS_FUNCTION SF, SYS_RIGHT SR, SYS_BUSINESS_SYSTEM SBS
+		WHERE SR.SYS_PERSON_ID = #sysPersonId# AND SF.PARENT_FUNCTION_ID = #parentMenuId# AND SBS.BUSINESS_SYSTEM_ID = #businessSystemId#
+		  AND SR.FUNCTION_ID = SF.FUNCTION_ID AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID
+		  AND SF.SYS_STATUS_ID=1 AND SF.TENANT_ID = #tenantId#
+		  ORDER BY SF.SHOWNUM	DESC
+	</select>
+	<select id="queryMenuInfoBOEn2" parameterClass="java.util.HashMap" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfoBO">
+	   SELECT DISTINCT(SF.FUNCTION_ID) menuId, SF.FUNCTION_EN_NAME menuName, SF.URL menuHref, SF.SHOWNUM showNum ,SF.DISPLAY_MODE displayMode        
+	     FROM SYS_FUNCTION SF, SYS_RIGHT SR, SYS_BUSINESS_SYSTEM SBS
+		WHERE SR.SYS_PERSON_ID = #sysPersonId# AND SF.PARENT_FUNCTION_ID = #parentMenuId# AND SBS.BUSINESS_SYSTEM_ID = #businessSystemId#
+		  AND SR.FUNCTION_ID = SF.FUNCTION_ID AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID
+		  AND SF.SYS_STATUS_ID=1 AND SF.TENANT_ID = #tenantId#
+		  ORDER BY SF.SHOWNUM	DESC
+	</select>
+
+</sqlMap> 

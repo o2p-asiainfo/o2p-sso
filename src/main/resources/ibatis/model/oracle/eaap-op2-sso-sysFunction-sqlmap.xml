@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="eaap-op2-sso-sysFunction">
+	
+	<resultMap class="com.ailk.eaap.op2.sso.main.model.SysFunction" id="sysFunctionMap">
+		<result property="functionId" column="FUNCTION_ID" javaType="String"/>
+		<result property="functionName" column="FUNCTION_NAME" javaType="String"/>
+		<result property="functionEnName" column="FUNCTION_EN_NAME" javaType="String"/>
+		<result property="parentFunctionId" column="PARENT_FUNCTION_ID" javaType="String"/>
+		<result property="url" column="URL" javaType="String"/>
+		<result property="shownum" column="SHOWNUM" javaType="String"/>
+		<result property="businessSystemId" column="BUSINESS_SYSTEM_ID" javaType="String"/>
+		<result property="sysStatusId" column="SYS_STATUS_ID" javaType="String"/>
+		<result property="sysStatusName" column="SYS_STATUS_NAME" javaType="String"/>
+		<result property="displayMode" column="DISPLAY_MODE" javaType="String"/>
+	</resultMap>
+	
+	<!-- 查出全部功能点信息	-->
+	<select id="queryAll"  resultMap="sysFunctionMap">
+		SELECT * FROM SYS_FUNCTION SF LEFT JOIN SYS_STATUS SS ON SF.SYS_STATUS_ID = SS.SYS_STATUS_ID
+	</select>
+	
+	<!-- 查出符合条件的全部功能点信息	-->
+	<select id="queryAllSysFunction"  parameterClass="java.util.Map" resultMap="sysFunctionMap">
+		SELECT * FROM (SELECT ROWNUM RNUM, SF.FUNCTION_ID, SF.FUNCTION_NAME,SF.BUSINESS_SYSTEM_ID,SF.PARENT_FUNCTION_ID,SF.URL,SF.SYS_STATUS_ID,SS.SYS_STATUS_NAME,SF.SHOWNUM,SF.FUNCTION_EN_NAME,SF.DISPLAY_MODE  
+                         FROM SYS_FUNCTION SF  
+                    LEFT JOIN SYS_STATUS SS ON SF.SYS_STATUS_ID = SS.SYS_STATUS_ID 
+                     <dynamic prepend= " WHERE ">
+                     	<isNotEmpty prepend=" AND " property="functionName">SF.FUNCTION_NAME LIKE '%' || #functionName# || '%'</isNotEmpty>
+       				 	<isNotEmpty prepend=" AND " property="parentFunctionId">SF.PARENT_FUNCTION_ID = #parentFunctionId#</isNotEmpty>
+            			<isNotEmpty prepend=" AND " property="businessSystemId">SF.BUSINESS_SYSTEM_ID = #businessSystemId#</isNotEmpty>
+        				<isNotEmpty prepend=" AND " property="stateId">SF.SYS_STATUS_ID = #stateId# </isNotEmpty> 
+                     </dynamic>
+                     ORDER BY SF.FUNCTION_ID
+                     )
+            WHERE RNUM BETWEEN #startRow# AND (#startRow# + #rows# - 1)
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_FUNCTION SF 
+			 <dynamic prepend= " WHERE ">
+				<isNotEmpty prepend=" AND " property="functionName">FUNCTION_NAME LIKE '%' || #functionName# || '%'</isNotEmpty>
+				<isNotEmpty prepend=" AND " property="parentFunctionId">PARENT_FUNCTION_ID = #parentFunctionId#</isNotEmpty>
+        		<isNotEmpty prepend=" AND " property="businessSystemId">BUSINESS_SYSTEM_ID = #businessSystemId#</isNotEmpty>
+				<isNotEmpty prepend=" AND " property="stateId">SYS_STATUS_ID = #stateId#</isNotEmpty>
+			 </dynamic>
+	</select>
+	
+    <!-- 根据functionId 查询功能点表	-->
+    <select id="querySysFunctionById"  parameterClass="String" resultMap="sysFunctionMap">
+		SELECT * FROM SYS_FUNCTION SF LEFT JOIN SYS_STATUS SS ON SF.SYS_STATUS_ID = SS.SYS_STATUS_ID 
+        		WHERE SF.FUNCTION_ID = #functionId#
+	</select>
+	
+	<!-- 查询父功能点下子功能点的排序号showNum -->
+	<select id="queryShownum" parameterClass="String" resultClass="String">
+		SELECT MAX(SHOWNUM)+1 FROM SYS_FUNCTION SF WHERE  SF.PARENT_FUNCTION_ID = #parentFunctionId#
+	</select>
+	
+	<!-- 判断新添加功能点名称是否存在 -->
+	<select id="isFunctionExist" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_FUNCTION SF 
+		<dynamic prepend= " WHERE ">
+			<isNotEmpty prepend=" AND " property="functionName">FUNCTION_NAME = #functionName#</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+    <!-- 插入新的功能点 -->
+    <insert id="insertSysFunction" parameterClass="java.util.HashMap">
+    	<selectKey resultClass="String" keyProperty="functionId">
+			SELECT SEQ_SYS_FUNCTION.NEXTVAL FROM DUAL
+	 	</selectKey>
+	 	
+    	INSERT INTO SYS_FUNCTION (   
+    	<dynamic>
+    		<isNotEmpty property="functionId">FUNCTION_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="functionName">FUNCTION_NAME</isNotEmpty>
+			<isNotEmpty prepend="," property="parentFunctionId">PARENT_FUNCTION_ID</isNotEmpty>
+			<isNotEmpty prepend="," property="url">URL</isNotEmpty>
+			,SHOWNUM 
+			<isNotEmpty prepend="," property="businessSystemId">BUSINESS_SYSTEM_ID</isNotEmpty>
+			<isNotEmpty prepend="," property="displayMode">DISPLAY_MODE</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">SYS_STATUS_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="functionId">#functionId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="functionName">#functionName#</isNotEmpty>
+			<isNotEmpty prepend="," property="parentFunctionId">#parentFunctionId#</isNotEmpty>
+			<isNotEmpty prepend="," property="url">#url#</isNotEmpty>
+			<isNotEmpty prepend="," property="shownum">#shownum#</isNotEmpty>
+			<isEmpty prepend="," property="shownum">1</isEmpty>
+			<isNotEmpty prepend="," property="businessSystemId">#businessSystemId#</isNotEmpty>
+			<isNotEmpty prepend="," property="displayMode">#displayMode#</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">#stateId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    
+    <!-- 删除 -->
+    <delete id="deleteSysFunctionById" parameterClass="String">
+    	DELETE FROM SYS_FUNCTION  WHERE FUNCTION_ID=#functionId#
+    </delete>
+    
+    <!-- 修改 -->
+    <update id="updateSysFunctionById" parameterClass="java.util.HashMap">
+    	UPDATE SYS_FUNCTION   
+    	<dynamic prepend="SET">
+    		<isNotEmpty prepend=" ," property="functionName"> FUNCTION_NAME = #functionName#</isNotEmpty>
+			<isNotEmpty prepend=" ," property="parentFunctionId"> PARENT_FUNCTION_ID = #parentFunctionId#</isNotEmpty>
+			<isNotEmpty prepend=" ," property="url"> URL = #url#</isNotEmpty>
+			<isNotEmpty prepend=" ," property="shownum">SHOWNUM = #shownum# </isNotEmpty>
+			<isNotEmpty prepend=" ," property="businessSystemId">BUSINESS_SYSTEM_ID = #businessSystemId# </isNotEmpty>
+			,DISPLAY_MODE = #displayMode# 
+			<isNotEmpty prepend=" ," property="stateId">SYS_STATUS_ID = #stateId# </isNotEmpty>
+    	</dynamic> 
+    	  WHERE FUNCTION_ID = #functionId#   
+    </update>
+</sqlMap> 

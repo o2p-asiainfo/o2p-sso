@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysPersonRight">
+	
+	<!-- 查出符合条件的全部员工权限信息	-->
+	<select id="queryAllSysPersonRight"  parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 SELECT * FROM (
+	             SELECT ROWNUM RNUM,SRI.SYS_RIGHT_ID,SRI.SYS_PERSON_ID,SP.NAME,SP.CARD_NUMBER,SRI.SYS_ROLE_ID,SR.SYS_ROLE_NAME,SRI.FUNCTION_ID,SF.FUNCTION_NAME,
+	                    SRI.SYS_ROLE_TYPE_ID,SRT.SYS_ROLE_TYPE_NAME,SRI.AUTH_PERSON_ID,SPP.CARD_NUMBER AUTH_CARD_NUMBER,to_char(SRI.AUTH_TIME,'yyyy-mm-dd hh24:mm:ss') AUTH_TIME,SRI.SYS_STATUS_ID,SS.SYS_STATUS_NAME
+	               FROM SYS_RIGHT SRI
+	          LEFT JOIN SYS_PERSON SP ON SRI.SYS_PERSON_ID = SP.SYS_PERSON_ID
+	          LEFT JOIN SYS_PERSON SPP ON SRI.AUTH_PERSON_ID = SPP.SYS_PERSON_ID
+	          LEFT JOIN SYS_ROLE SR ON SRI.SYS_ROLE_ID = SR.SYS_ROLE_ID
+	          LEFT JOIN SYS_FUNCTION SF ON SRI.FUNCTION_ID = SF.FUNCTION_ID
+	          LEFT JOIN SYS_ROLE_TYPE SRT ON SRI.SYS_ROLE_TYPE_ID = SRT.SYS_ROLE_TYPE_ID
+	          LEFT JOIN SYS_STATUS SS ON SRI.SYS_STATUS_ID = SS.SYS_STATUS_ID
+	          LEFT JOIN SYS_DEPT_PERSON SDP ON SRI.SYS_PERSON_ID = SDP.SYS_PERSON_ID
+	          LEFT JOIN SYS_DEPT SD ON SD.DEPT_ID = SDP.DEPT_ID
+	          <dynamic prepend= " WHERE ">
+	                 <isNotEmpty prepend=" AND " property="deptId">SD.DEPT_ID=#deptId#</isNotEmpty>                                      
+	                 <isNotEmpty prepend=" AND " property="sysPersonId">SRI.SYS_PERSON_ID = #sysPersonId#</isNotEmpty>
+	          </dynamic>
+	           ORDER BY SRI.SYS_PERSON_ID )
+        WHERE RNUM BETWEEN #startRow# AND (#startRow# + #rows# - 1)
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_RIGHT SRI
+		<dynamic prepend= " WHERE ">	                    	        			
+		         <isNotEmpty prepend=" AND " property="sysPersonId">SRI.SYS_PERSON_ID = #sysPersonId#</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 删除一条员工权限 -->
+    <delete id="deleteSysPersonRightById" parameterClass="String">
+    	DELETE FROM SYS_RIGHT SRI WHERE SRI.SYS_RIGHT_ID=#sysRightId#
+    </delete>
+	
+    <!-- 根据授权员工Id和被授权员工Id查询出此员工未赋权的角色 -->
+	<select id="queryNotSelectedRole" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT SR.SYS_ROLE_ID, SR.SYS_ROLE_NAME FROM SYS_ROLE SR 
+ 		 WHERE SR.SYS_ROLE_ID 
+    		IN (SELECT DISTINCT(SRI.SYS_ROLE_ID) FROM SYS_RIGHT SRI 
+         		 WHERE SRI.SYS_PERSON_ID=#authSysPersonId# AND SRI.SYS_ROLE_TYPE_ID=1 AND SRI.SYS_STATUS_ID=1
+             	   AND SRI.SYS_ROLE_ID NOT IN (SELECT DISTINCT(SRR.SYS_ROLE_ID) 
+                                          		 FROM SYS_RIGHT SRR WHERE SRR.SYS_PERSON_ID=#sysPersonId#)
+       		    )
+       	   AND SR.SYS_STATUS_ID=1
+	</select>
+	<!-- 超级管理员为自身授权 -->
+	<select id="queryNotSelectedRoleSuper" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT SR.SYS_ROLE_ID, SR.SYS_ROLE_NAME FROM SYS_ROLE SR 
+ 		 WHERE SR.SYS_ROLE_ID 
+    	NOT	IN (SELECT DISTINCT(SRI.SYS_ROLE_ID) FROM SYS_RIGHT SRI 
+         		 WHERE SRI.SYS_PERSON_ID=#sysPersonId# )
+           AND SR.SYS_STATUS_ID=1
+	</select>
+	
+	<!-- 根据授权员工Id和被授权员工Id查询出此员工未赋权的功能点（直接赋权的功能点，不包括角色包含的） -->
+	<select id="queryNotSelectedFunction" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT SF.FUNCTION_ID,SF.FUNCTION_NAME FROM SYS_FUNCTION SF
+ 		 WHERE SF.FUNCTION_ID
+            IN ( SELECT DISTINCT(SRI.FUNCTION_ID) FROM SYS_RIGHT SRI
+         		  WHERE SRI.SYS_PERSON_ID=#authSysPersonId# AND SRI.SYS_ROLE_TYPE_ID=1 AND SRI.SYS_STATUS_ID=1
+                    AND SRI.FUNCTION_ID NOT IN (SELECT DISTINCT(SRR.FUNCTION_ID) 
+                                                  FROM SYS_RIGHT SRR WHERE SRR.SYS_PERSON_ID=#sysPersonId#)
+                )
+           AND SF.SYS_STATUS_ID=1
+	</select>
+	<!-- 超级管理员为自身授权 -->
+	<select id="queryNotSelectedFunctionSuper" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT SF.FUNCTION_ID,SF.FUNCTION_NAME FROM SYS_FUNCTION SF
+ 		 WHERE SF.FUNCTION_ID
+    	NOT IN ( SELECT DISTINCT(SRI.FUNCTION_ID) FROM SYS_RIGHT SRI
+         		  WHERE SRI.SYS_PERSON_ID=1 )           
+       	   AND SF.SYS_STATUS_ID=1
+	</select>
+
+    <!-- 查询序列值 -->
+	<select id="querySeq" resultClass="String">
+		SELECT SEQ_SYS_RIGHT.NEXTVAL FROM DUAL
+	</select>
+
+	<!--为某角色赋权新功能点 -->
+    <insert id="insertSysPersonRight" parameterClass="java.util.HashMap">
+    	INSERT INTO SYS_RIGHT (   
+    	<dynamic>
+    		<isNotEmpty property="sysRightId">SYS_RIGHT_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysPersonId">SYS_PERSON_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleId">SYS_ROLE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="functionId">FUNCTION_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleTypeId">SYS_ROLE_TYPE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="authPersonId">AUTH_PERSON_ID</isNotEmpty>
+    		 ,AUTH_TIME  
+    		<isNotEmpty prepend="," property="sysStatusId">SYS_STATUS_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="sysRightId"> #sysRightId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysPersonId">#sysPersonId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleId">#sysRoleId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="functionId"> #functionId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleTypeId">#sysRoleTypeId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="authPersonId">#authPersonId#</isNotEmpty>
+    		 ,SYSDATE 
+    		<isNotEmpty prepend="," property="sysStatusId">#sysStatusId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    
+    <!-- 根据sysRightId 查询员工权限表	-->
+    <select id="querySysPersonRightById"  parameterClass="String" resultClass="java.util.HashMap">
+		       SELECT SRI.SYS_RIGHT_ID,SRI.SYS_PERSON_ID,SP.NAME,SP.CARD_NUMBER,SRI.SYS_ROLE_ID,SR.SYS_ROLE_NAME,SRI.FUNCTION_ID,SF.FUNCTION_NAME,
+                      SRI.SYS_ROLE_TYPE_ID,SRT.SYS_ROLE_TYPE_NAME,SRI.AUTH_PERSON_ID,SPP.CARD_NUMBER AUTH_CARD_NUMBER,to_char(SRI.AUTH_TIME,'yyyy-mm-dd hh:mm:ss') AUTH_TIME,SRI.SYS_STATUS_ID,SS.SYS_STATUS_NAME
+                 FROM SYS_RIGHT SRI
+            LEFT JOIN SYS_PERSON SP ON SRI.SYS_PERSON_ID = SP.SYS_PERSON_ID
+            LEFT JOIN SYS_PERSON SPP ON SRI.AUTH_PERSON_ID = SPP.SYS_PERSON_ID
+            LEFT JOIN SYS_ROLE SR ON SRI.SYS_ROLE_ID = SR.SYS_ROLE_ID
+            LEFT JOIN SYS_FUNCTION SF ON SRI.FUNCTION_ID = SF.FUNCTION_ID
+            LEFT JOIN SYS_ROLE_TYPE SRT ON SRI.SYS_ROLE_TYPE_ID = SRT.SYS_ROLE_TYPE_ID
+            LEFT JOIN SYS_STATUS SS ON SRI.SYS_STATUS_ID = SS.SYS_STATUS_ID
+           WHERE SRI.SYS_RIGHT_ID=#sysRightId# 
+	</select>
+	
+    <!-- 修改(状态或角色类型) -->
+    <update id="updateSysPersonRight" parameterClass="java.util.HashMap">
+    	UPDATE SYS_RIGHT   
+    	<dynamic prepend="SET">
+    		<isNotEmpty prepend=" ," property="sysRoleTypeId"> SYS_ROLE_TYPE_ID = #sysRoleTypeId#</isNotEmpty>
+			<isNotEmpty prepend=" ," property="sysStatusId"> SYS_STATUS_ID = #sysStatusId# </isNotEmpty>
+    	</dynamic> 
+    	 WHERE SYS_RIGHT_ID = #sysRightId#
+    </update>
+</sqlMap> 

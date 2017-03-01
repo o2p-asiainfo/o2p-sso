@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysArea">
+	
+	<resultMap class="com.ailk.eaap.op2.sso.main.model.SysArea" id="sysAreaMap">
+		<result property="sysAreaId" column="SYS_AREA_ID" javaType="Long"/>
+		<result property="sysAreaName" column="SYS_AREA_NAME" javaType="String"/>
+		<result property="parentAreaId" column="PARENT_AREA_ID" javaType="Long"/>
+	</resultMap>
+	
+	<!-- 根据区域编号SYS_AREA_ID查询区域或省份表 -->
+	<select id="querySysArea" parameterClass="Long" resultMap="sysAreaMap">
+		SELECT * FROM SYS_AREA WHERE SYS_AREA_ID = #sysAreaId#
+	</select>
+	
+	<!-- 查询全部 -->
+	<select id="queryAll" resultMap="sysAreaMap">
+		SELECT * FROM SYS_AREA
+	</select>
+	
+</sqlMap> 

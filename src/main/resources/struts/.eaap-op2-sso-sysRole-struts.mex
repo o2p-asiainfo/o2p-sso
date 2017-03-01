@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="sysRole" location="224,165" size="770,420">
+    <action name="showSysRole" location="65,57" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="roleManage.jsp" />
+      </result>
+    </action>
+    <action name="showAddSysRole" location="65,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="roleAdd.jsp" />
+      </result>
+    </action>
+    <action name="addSysRole" location="65,337" size="150,41">
+      <result name="success" />
+    </action>
+    <action name="deleteSysRole" location="310,338" size="150,40" />
+    <action name="showUpdateSysRole" location="310,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="roleUpdate.jsp" />
+      </result>
+    </action>
+    <action name="updateSysRole" location="555,232" size="150,41">
+      <result name="success" />
+    </action>
+  </package>
+  <webResource name="roleManage.jsp" path="/role/roleManage.jsp" location="10,185" size="150,55" />
+  <webResource name="roleAdd.jsp" path="/role/roleAdd.jsp" location="57,360" size="150,55" />
+  <webResource name="roleUpdate.jsp" path="/role/roleUpdate.jsp" location="537,10" size="150,55" />
+</Struts2Diagram>
+

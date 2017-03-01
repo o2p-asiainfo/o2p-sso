@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysLogLogin">
+	
+	<!-- 查出符合条件的全部登录日志信息	-->
+	<select id="queryAllSysLogLogin"  parameterClass="java.util.Map" resultClass="java.util.HashMap">
+			SELECT SLL.SYS_PERSON_ID,SLL.SYS_LOGIN_ID,DATE_FORMAT(SLL.LOGIN_TIME,'%Y-%m-%d %H:%i:%s') LOGIN_TIME,SLL.IP,SLL.AUTH_RSP_DESC,SLL.CARD_NUMBER,SP.NAME  
+      		  FROM SYS_LOG_LOGIN SLL, SYS_PERSON SP
+             WHERE SLL.SYS_PERSON_ID = SP.SYS_PERSON_ID
+     			 <isNotEmpty prepend=" AND " property="sysPersonId">SLL.SYS_PERSON_ID = #sysPersonId#</isNotEmpty>
+                 <isNotEmpty prepend=" AND " property="minDate"> <![CDATA[ SLL.LOGIN_TIME>=STR_TO_DATE(#minDate#, '%Y-%m-%d %H:%i:%s') ]]> </isNotEmpty>
+                 <isNotEmpty prepend=" AND " property="maxDate"> <![CDATA[ SLL.LOGIN_TIME<=STR_TO_DATE(#maxDate#, '%Y-%m-%d %H:%i:%s') ]]> </isNotEmpty>
+          ORDER BY SLL.SYS_LOGIN_ID DESC
+             limit #pro_mysql#,#page_record#    
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_LOG_LOGIN SLL, SYS_PERSON SP
+			 WHERE SLL.SYS_PERSON_ID = SP.SYS_PERSON_ID
+			     <isNotEmpty prepend=" AND " property="sysPersonId">SLL.SYS_PERSON_ID = #sysPersonId#</isNotEmpty>
+                 <isNotEmpty prepend=" AND " property="minDate"> <![CDATA[ SLL.LOGIN_TIME>=STR_TO_DATE(#minDate#, '%Y-%m-%d %H:%i:%s') ]]> </isNotEmpty>
+                 <isNotEmpty prepend=" AND " property="maxDate"> <![CDATA[ SLL.LOGIN_TIME<=STR_TO_DATE(#maxDate#, '%Y-%m-%d %H:%i:%s') ]]> </isNotEmpty>
+	</select>
+	
+	<!-- 插入登录日志 -->
+    <insert id="insertSysLogLogin" parameterClass="com.ailk.eaap.op2.sso.main.model.SysLogLogin">
+    	<selectKey resultClass="String" keyProperty="sysLoginId">
+			SELECT nextval('SEQ_SYS_LOG_LOGIN') FROM DUAL
+	 	</selectKey>
+    	INSERT INTO SYS_LOG_LOGIN (   
+    	<dynamic>
+    		<isNotEmpty property="sysLoginId">SYS_LOGIN_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysPersonId">SYS_PERSON_ID</isNotEmpty>
+			,LOGIN_TIME 
+			<isNotEmpty prepend="," property="logoutTime">LOGOUT_TIME</isNotEmpty>
+			<isNotEmpty prepend="," property="ip">IP</isNotEmpty>
+    		<isNotEmpty prepend="," property="authTranId">AUTH_TRAN_ID</isNotEmpty>
+			<isNotEmpty prepend="," property="authRspType">AUTH_RSP_TYPE</isNotEmpty>
+			<isNotEmpty prepend="," property="authRspCode">AUTH_RSP_CODE</isNotEmpty>
+			<isNotEmpty prepend="," property="authRspDesc">AUTH_RSP_DESC</isNotEmpty>
+    		<isNotEmpty prepend="," property="cardNumber">CARD_NUMBER</isNotEmpty>
+			<isNotEmpty prepend="," property="authBegDate">AUTH_BEG_DATE</isNotEmpty> 
+			<isNotEmpty prepend="," property="authEndDate">AUTH_END_DATE</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="sysLoginId">#sysLoginId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysPersonId">#sysPersonId#</isNotEmpty>
+			,SYSDATE() 
+			<isNotEmpty prepend="," property="logoutTime">#logoutTime#</isNotEmpty>
+			<isNotEmpty prepend="," property="ip">#ip#</isNotEmpty>
+    		<isNotEmpty prepend="," property="authTranId">#authTranId#</isNotEmpty>
+			<isNotEmpty prepend="," property="authRspType">#authRspType#</isNotEmpty>
+			<isNotEmpty prepend="," property="authRspCode">#authRspCode#</isNotEmpty>
+			<isNotEmpty prepend="," property="authRspDesc">#authRspDesc#</isNotEmpty>
+    		<isNotEmpty prepend="," property="cardNumber">#cardNumber#</isNotEmpty>
+			<isNotEmpty prepend="," property="authBegDate">#authBegDate#</isNotEmpty> 
+			<isNotEmpty prepend="," property="authEndDate">#authEndDate#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    
+<!--     删除 -->
+<!--    <delete id="deleteSysCustomerById" parameterClass="String">-->
+<!--    	DELETE FROM SYS_CUSTOMER SC WHERE SC.SYS_CUSTOMER_ID=#sysCustomerId#-->
+<!--    </delete>-->
+    
+</sqlMap> 

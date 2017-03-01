@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="sysCustomer" location="255,165" size="770,420">
+    <action name="showSysCustomer" location="65,57" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="customerManage.jsp" />
+      </result>
+    </action>
+    <action name="showAddSysCustomer" location="65,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="customerAdd.jsp" />
+      </result>
+    </action>
+    <action name="isCustomerExist" location="0,0" size="0,0" />
+    <action name="addSysCustomer" location="65,337" size="150,41">
+      <result name="success" />
+    </action>
+    <action name="deleteSysCustomer" location="310,338" size="150,40" />
+    <action name="showUpdateSysCustomer" location="310,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="customerUpdate.jsp" />
+      </result>
+    </action>
+    <action name="updateSysCustomer" location="555,232" size="150,41">
+      <result name="success" />
+    </action>
+  </package>
+  <webResource name="customerManage.jsp" path="/customer/customerManage.jsp" location="10,185" size="150,55" />
+  <webResource name="customerAdd.jsp" path="/customer/customerAdd.jsp" location="22,360" size="150,55" />
+  <webResource name="customerUpdate.jsp" path="/customer/customerUpdate.jsp" location="537,10" size="150,55" />
+</Struts2Diagram>
+

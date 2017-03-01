@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysDept">
+	
+	<resultMap class="com.ailk.eaap.op2.sso.main.model.SysDept" id="sysDeptMap">
+		<result property="deptId" column="DEPT_ID" javaType="Long"/>
+		<result property="deptName" column="DEPT_NAME" javaType="String"/>
+		<result property="parentDeptId" column="PARENT_DEPT_ID" javaType="Long"/>
+		<result property="sysCustomerId" column="SYS_CUSTOMER_ID" javaType="Long"/>
+		<result property="sysCustomerName" column="SYS_CUSTOMER_NAME" javaType="String"/>
+		<result property="sysStatusId" column="SYS_STATUS_ID" javaType="Long"/>
+		<result property="sysStatusName" column="SYS_STATUS_NAME" javaType="String"/>
+	</resultMap>
+	
+	<!-- 根据员工ID查询部门表 -->
+	<select id="querySysDeptByPersonId" parameterClass="Long" resultClass="com.ailk.eaap.op2.sso.main.model.SysDept">
+		SELECT A.DEPT_ID as deptId, A.DEPT_NAME as deptName, A.PARENT_DEPT_ID as parentDeptId, A.SYS_CUSTOMER_ID as sysCustomerId, A.SYS_STATUS_ID as sysStatusId  
+		  FROM SYS_DEPT A, SYS_DEPT_PERSON B WHERE A.DEPT_ID = B.DEPT_ID AND B.SYS_PERSON_ID = #sysPersonId#
+	</select>
+	
+	<!-- 查出全部部门信息	-->
+	<select id="queryAll"  resultMap="sysDeptMap">
+		SELECT * FROM SYS_DEPT SD 
+            LEFT JOIN SYS_STATUS SS ON SD.SYS_STATUS_ID = SS.SYS_STATUS_ID 
+            LEFT JOIN SYS_CUSTOMER SC ON SC.SYS_CUSTOMER_ID=SD.SYS_CUSTOMER_ID
+            WHERE SD.SYS_STATUS_ID=1
+             ORDER BY SD.DEPT_ID
+	</select>
+	
+	<!-- 查出符合条件的全部部门信息	-->
+	<select id="queryAllSysDept"  parameterClass="java.util.Map" resultMap="sysDeptMap">
+		SELECT SD.DEPT_ID, SD.DEPT_NAME, SD.PARENT_DEPT_ID, SD.SYS_CUSTOMER_ID, SD.SYS_STATUS_ID, SS.SYS_STATUS_NAME, SC.SYS_CUSTOMER_NAME FROM SYS_DEPT SD 
+              LEFT JOIN SYS_STATUS SS ON SD.SYS_STATUS_ID = SS.SYS_STATUS_ID 
+              LEFT JOIN SYS_CUSTOMER SC ON SC.SYS_CUSTOMER_ID=SD.SYS_CUSTOMER_ID
+              <dynamic prepend= " WHERE ">
+                <isNotEmpty prepend=" AND " property="deptName">SD.DEPT_NAME concat('%' , #deptName# , '%')</isNotEmpty>
+   				<isNotEmpty prepend=" AND " property="sysCustomerNameId">SD.SYS_CUSTOMER_ID = #sysCustomerNameId#</isNotEmpty>
+  				<isNotEmpty prepend=" AND " property="stateId">SD.SYS_STATUS_ID = #stateId#</isNotEmpty>
+              </dynamic>
+              ORDER BY SD.DEPT_ID
+        	  limit #pro_mysql#,#page_record#
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_DEPT SD 
+			 <dynamic prepend= " WHERE ">
+				 <isNotEmpty prepend=" AND " property="deptName">DEPT_NAME LIKE concat('%' , #deptName# , '%') </isNotEmpty>
+				 <isNotEmpty prepend=" AND " property="sysCustomerNameId">SYS_CUSTOMER_ID = #sysCustomerNameId#</isNotEmpty>
+				 <isNotEmpty prepend=" AND " property="stateId">SYS_STATUS_ID = #stateId#</isNotEmpty>
+			 </dynamic>
+	</select>
+	
+    <!-- 根据DEPT_ID 查询部门表	-->
+    <select id="querySysDeptByDeptId"  parameterClass="String" resultMap="sysDeptMap">
+		SELECT  SD.DEPT_ID, SD.DEPT_NAME, SD.PARENT_DEPT_ID, SD.SYS_CUSTOMER_ID, SD.SYS_STATUS_ID, SS.SYS_STATUS_NAME, SC.SYS_CUSTOMER_NAME FROM SYS_DEPT SD 
+		  LEFT JOIN SYS_STATUS SS ON SD.SYS_STATUS_ID = SS.SYS_STATUS_ID 
+		  LEFT JOIN SYS_CUSTOMER SC ON SC.SYS_CUSTOMER_ID=SD.SYS_CUSTOMER_ID
+		 WHERE SD.DEPT_ID=#deptId# 
+	</select>
+	
+	<!-- 判断新添加部门名称是否存在 -->
+	<select id="isDeptExist" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_DEPT SD 
+		<dynamic prepend= " WHERE ">
+			<isNotEmpty prepend=" AND " property="deptName">SD.DEPT_NAME = #deptName#</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+    <!-- 插入新的部门 -->
+    <insert id="insertSysDept" parameterClass="java.util.HashMap">
+    	<selectKey resultClass="String" keyProperty="deptId">
+			SELECT nextval('SEQ_SYS_DEPT') FROM DUAL
+	 	</selectKey>
+    	INSERT INTO SYS_DEPT (   
+    	<dynamic>
+    		<isNotEmpty property="deptId">DEPT_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="deptName">DEPT_NAME</isNotEmpty>
+			<isNotEmpty prepend="," property="sysCustomerNameId">SYS_CUSTOMER_ID</isNotEmpty>
+			<isNotEmpty prepend="," property="parentDeptNameId">PARENT_DEPT_ID</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">SYS_STATUS_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="deptId">#deptId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="deptName">#deptName#</isNotEmpty>
+			<isNotEmpty prepend="," property="sysCustomerNameId">#sysCustomerNameId#</isNotEmpty>
+			<isNotEmpty prepend="," property="parentDeptNameId">#parentDeptNameId#</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">#stateId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    
+    <!-- 删除 -->
+    <delete id="deleteSysDeptById" parameterClass="String">
+    	DELETE FROM SYS_DEPT  WHERE DEPT_ID=#deptId#
+    </delete>
+    
+    <!-- 修改 -->
+    <update id="updateSysDeptById" parameterClass="java.util.HashMap">
+    	UPDATE SYS_DEPT   
+    	<dynamic prepend="SET">
+    		<isNotEmpty prepend=" ," property="deptName"> DEPT_NAME = #deptName#</isNotEmpty>
+			<isNotEmpty prepend=" ," property="sysCustomerNameId"> SYS_CUSTOMER_ID = #sysCustomerNameId# </isNotEmpty>
+			 , PARENT_DEPT_ID = #parentDeptNameId#
+			<isNotEmpty prepend=" ," property="stateId"> SYS_STATUS_ID = #stateId# </isNotEmpty>
+    	</dynamic> 
+    	WHERE  DEPT_ID = #deptId#
+    </update>
+</sqlMap> 

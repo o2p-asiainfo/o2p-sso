@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="sysRoleFunction" location="224,10" size="525,315">
+    <action name="showSysRoleFunction" location="65,57" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="roleManage.jsp" />
+      </result>
+    </action>
+    <action name="showAddSysRoleFunction" location="65,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="roleAdd.jsp" />
+      </result>
+    </action>
+    <action name="addSysRoleFunction" location="310,232" size="150,41">
+      <result name="success" />
+    </action>
+    <action name="deleteSysRoleFunction" location="310,128" size="150,40" />
+  </package>
+  <webResource name="roleManage.jsp" path="/role/roleManage.jsp" location="10,30" size="150,55" />
+  <webResource name="roleAdd.jsp" path="/role/roleAdd.jsp" location="57,205" size="150,55" />
+</Struts2Diagram>
+

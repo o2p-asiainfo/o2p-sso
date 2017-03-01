@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysCustomer">
+	
+	<resultMap class="com.ailk.eaap.op2.sso.main.model.SysCustomer" id="sysCustomerMap">
+		<result property="sysCustomerId" column="SYS_CUSTOMER_ID" javaType="String"/>
+		<result property="sysCustomerName" column="SYS_CUSTOMER_NAME" javaType="String"/>
+		<result property="sysStatusId" column="SYS_STATUS_ID" javaType="String"/>
+		<result property="sysStatusName" column="SYS_STATUS_NAME" javaType="String"/>
+		<result property="sysAreaId" column="SYS_AREA_ID" javaType="String"/>
+		<result property="sysAreaName" column="SYS_AREA_NAME" javaType="String"/>
+		<result property="sysCardTypeId" column="SYS_CARD_TYPE_ID" javaType="String"/>
+		<result property="sysCardNumber" column="SYS_CARD_NUMBER" javaType="String"/>
+	</resultMap>
+	
+	<!-- 查出符合条件的全部客户信息	-->
+	<select id="queryAllSysCustomer"  parameterClass="java.util.Map" resultMap="sysCustomerMap">
+		SELECT SC.SYS_CUSTOMER_ID,SC.SYS_CUSTOMER_NAME,SC.SYS_AREA_ID,SC.SYS_CARD_TYPE_ID,SC.SYS_CARD_NUMBER,SC.SYS_STATUS_ID,SS.SYS_STATUS_NAME,SA.SYS_AREA_NAME FROM SYS_CUSTOMER SC 
+				LEFT JOIN SYS_AREA SA ON SC.SYS_AREA_ID=SA.SYS_AREA_ID 
+				LEFT JOIN SYS_STATUS SS ON SC.SYS_STATUS_ID=SS.SYS_STATUS_ID
+                <dynamic prepend= " WHERE ">
+	                <isNotEmpty prepend=" AND " property="sysCustomerName">SC.SYS_CUSTOMER_NAME LIKE concat('%',#sysCustomerName#,'%') </isNotEmpty>
+					<isNotEmpty prepend=" AND " property="sysAreaId">SC.SYS_AREA_ID = #sysAreaId#</isNotEmpty>
+					<isNotEmpty prepend=" AND " property="stateId">SC.SYS_STATUS_ID = #stateId#</isNotEmpty>
+                </dynamic>
+                ORDER BY SYS_CUSTOMER_ID
+				limit #pro_mysql#,#page_record#
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_CUSTOMER SC 
+			 <dynamic prepend= " WHERE ">
+			    <isNotEmpty prepend=" AND " property="sysCustomerName">SYS_CUSTOMER_NAME LIKE concat('%',#sysCustomerName#,'%') </isNotEmpty>
+				<isNotEmpty prepend=" AND " property="sysAreaId">SYS_AREA_ID = #sysAreaId#</isNotEmpty>
+				<isNotEmpty prepend=" AND " property="stateId">SYS_STATUS_ID = #stateId#</isNotEmpty>
+			 </dynamic>
+	</select>
+	
+	<!-- 查出全部客户信息	-->
+	<select id="queryAll" resultMap="sysCustomerMap">
+		SELECT * FROM SYS_CUSTOMER SC 
+	 		LEFT JOIN SYS_AREA SA ON SC.SYS_AREA_ID=SA.SYS_AREA_ID 
+			LEFT JOIN SYS_STATUS SS ON SC.SYS_STATUS_ID=SS.SYS_STATUS_ID
+			WHERE SC.SYS_STATUS_ID=1
+	</select>
+	
+    <!-- 根据CustomerId 查询客户表	-->
+    <select id="querySysCustomerById"  parameterClass="String" resultMap="sysCustomerMap">
+		SELECT SC.SYS_CUSTOMER_ID,SC.SYS_CUSTOMER_NAME,SC.SYS_AREA_ID,SC.SYS_CARD_TYPE_ID,SC.SYS_CARD_NUMBER,SC.SYS_STATUS_ID,SS.SYS_STATUS_NAME,SA.SYS_AREA_NAME FROM SYS_CUSTOMER SC 
+								LEFT JOIN SYS_AREA SA ON SC.SYS_AREA_ID=SA.SYS_AREA_ID 
+								LEFT JOIN SYS_STATUS SS ON SC.SYS_STATUS_ID=SS.SYS_STATUS_ID
+								WHERE SC.SYS_CUSTOMER_ID=#sysCustomerId#
+	</select>
+	
+	<!-- 判断新添加客户名称是否存在 -->
+	<select id="isCustomerExist" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_CUSTOMER SC 
+		<dynamic prepend= " WHERE ">
+			<isNotEmpty prepend=" AND " property="sysCustomerName">SC.SYS_CUSTOMER_NAME = #sysCustomerName#</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 插入新的客户 -->
+    <insert id="insertSysCustomer" parameterClass="java.util.HashMap">
+    	<selectKey resultClass="String" keyProperty="sysCustomerId">
+			SELECT nextval('SEQ_SYS_CUSTOMER') FROM DUAL
+	 	</selectKey>
+    	INSERT INTO SYS_CUSTOMER (   
+    	<dynamic>
+    		<isNotEmpty property="sysCustomerId">SYS_CUSTOMER_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysCustomerName">SYS_CUSTOMER_NAME</isNotEmpty>
+			<isNotEmpty prepend="," property="sysAreaId">SYS_AREA_ID</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">SYS_STATUS_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="sysCustomerId">#sysCustomerId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysCustomerName">#sysCustomerName#</isNotEmpty>
+			<isNotEmpty prepend="," property="sysAreaId">#sysAreaId#</isNotEmpty>
+			<isNotEmpty prepend="," property="stateId">#stateId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    
+    <!-- 删除 -->
+    <delete id="deleteSysCustomerById" parameterClass="String">
+    	DELETE FROM SYS_CUSTOMER  WHERE SYS_CUSTOMER_ID=#sysCustomerId#
+    </delete>
+    
+    <!-- 修改 -->
+    <update id="updateSysCustomerById" parameterClass="java.util.HashMap">
+    	UPDATE SYS_CUSTOMER   
+    	<dynamic prepend="SET">
+    		<isNotEmpty prepend=" ," property="sysCustomerName"> SYS_CUSTOMER_NAME = #sysCustomerName#</isNotEmpty>
+			, SYS_AREA_ID = #sysAreaId# 
+			<isNotEmpty prepend=" ," property="stateId"> SYS_STATUS_ID = #stateId# </isNotEmpty>
+    	</dynamic> 
+    	WHERE  SYS_CUSTOMER_ID = #sysCustomerId#
+    </update>
+</sqlMap> 

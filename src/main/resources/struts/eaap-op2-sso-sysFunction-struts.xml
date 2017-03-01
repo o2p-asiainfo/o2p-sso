@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+	
+<struts>
+	<package name="sysFunction" extends="default" namespace="/sysFunction">
+		<action name="showSysFunction" class="com.ailk.eaap.op2.sso.main.action.SysFunctionAction" method="preShow">
+			<result name="success">/function/functionManage.jsp</result>
+		</action>
+		<action name="showAddSysFunction" class="com.ailk.eaap.op2.sso.main.action.SysFunctionAction" method="preAdd">
+			<result name="success">/function/functionAdd.jsp</result>
+		</action>
+		<action name="isFunctionExist" class="com.ailk.eaap.op2.sso.main.action.SysFunctionAction" method="isFunctionExist">
+		</action>
+		<action name="addSysFunction" class="com.ailk.eaap.op2.sso.main.action.SysFunctionAction" method="addSysFunction">
+			<result name="success" type="redirectAction">
+				<param name="actionName">showSysFunction</param>
+			</result>
+		</action>
+		<action name="deleteSysFunction" class="com.ailk.eaap.op2.sso.main.action.SysFunctionAction" method="deleteSysFunction">
+		</action>
+		<action name="showUpdateSysFunction" class="com.ailk.eaap.op2.sso.main.action.SysFunctionAction" method="preUpdate">
+			<result name="success">/function/functionUpdate.jsp</result>
+		</action>
+		<action name="isUpdateFunctionExist" class="com.ailk.eaap.op2.sso.main.action.SysFunctionAction" method="isUpdateFunctionExist">
+		</action>
+		<action name="updateSysFunction" class="com.ailk.eaap.op2.sso.main.action.SysFunctionAction" method="updateSysFunction">
+			<result name="success" type="redirectAction">
+				<param name="actionName">showSysFunction</param>
+			</result>
+		</action>
+	</package>
+	
+</struts>

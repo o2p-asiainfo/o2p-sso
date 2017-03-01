@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysDeptRole">
+	
+	
+	<!-- 查出符合条件的全部部门角色信息	-->
+	<select id="queryAllSysDeptRole"  parameterClass="java.util.Map" resultClass="java.util.HashMap">
+              SELECT SDR.DEPT_ROLE_ID,SDR.DEPT_ID,SDR.ROLE_ID,SD.DEPT_NAME,SR.SYS_ROLE_NAME 
+                FROM SYS_DEPT_ROLE SDR, SYS_DEPT SD, SYS_ROLE SR
+               WHERE SDR.DEPT_ID=SD.DEPT_ID AND SDR.ROLE_ID=SR.SYS_ROLE_ID 
+                     <isNotEmpty prepend=" AND " property="sysDeptId"> SDR.DEPT_ID=#sysDeptId#</isNotEmpty> 
+      		ORDER BY DEPT_ROLE_ID
+      		   limit #pro_mysql#,#page_record#
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_DEPT_ROLE SDR, SYS_DEPT SD, SYS_ROLE SR
+                       WHERE SDR.DEPT_ID=SD.DEPT_ID AND SDR.ROLE_ID=SR.SYS_ROLE_ID
+        			   <isNotEmpty prepend=" AND " property="sysDeptId"> SDR.DEPT_ID=#sysDeptId#</isNotEmpty>
+	</select>
+	
+	<!-- 删除一条部门角色 -->
+    <delete id="deleteSysDeptRoleById" parameterClass="String">
+    	DELETE FROM SYS_DEPT_ROLE  WHERE DEPT_ROLE_ID=#deptRoleId#
+    </delete>
+	
+	<!-- 根据部门Id查询出此部门未赋权的角色 -->
+	<select id="queryNotSelectedRoleByDeptId" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT SR.SYS_ROLE_ID,SR.SYS_ROLE_NAME 
+		  FROM SYS_ROLE SR
+		 WHERE SR.SYS_ROLE_ID NOT IN
+		       (SELECT SDR.ROLE_ID FROM SYS_DEPT_ROLE SDR WHERE SDR.DEPT_ID=#sysDeptId#)
+		   AND SR.SYS_STATUS_ID=1
+	</select>
+	
+	<!-- 查询序列值 -->
+	<select id="querySeq" resultClass="String">
+		SELECT nextval('SEQ_SYS_DEPT_ROLE') FROM DUAL
+	</select>
+	
+	<!-- 为某部门赋权新角色 -->
+    <insert id="insertSysDeptRole" parameterClass="java.util.HashMap">
+    	INSERT INTO SYS_DEPT_ROLE (   
+    	<dynamic>
+    		<isNotEmpty property="deptRoleId">DEPT_ROLE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysDeptId">DEPT_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleId">ROLE_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="deptRoleId"> #deptRoleId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysDeptId">#sysDeptId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysRoleId">#sysRoleId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+	
+	
+</sqlMap> 

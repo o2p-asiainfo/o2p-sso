@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       					http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	
+	
+	 
+	<bean class="com.ailk.eaap.o2p.common.spring.config.O2pPropertyPlaceholderConfigurer">
+        <property name="remoteOverride" value="true"></property>
+        <property name="cacheHolder" ref="cacheHolder"></property>
+    </bean>
+     <bean id="cacheHolder" class="com.ailk.eaap.o2p.common.spring.config.ZKCfgCacheHolder">
+        <property name="ignoreResourceNotFound" value="true"></property>
+    </bean>
+	 
+	 
+	<!-- 
+	<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource" destroy-method="close">
+        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="driverUrl" value="jdbc:oracle:thin:@localhost:1521:orcl"/>
+        <property name="user" value="comm"/>
+        <property name="password" value="comm"/>
+        <property name="alias" value="hrs"/>
+	    <property name="prototypeCount" value="0" />
+	    <property name="maximumConnectionCount" value="10" />
+	    <property name="minimumConnectionCount" value="0" />
+	    <property name="simultaneousBuildThrottle" value="50" />
+	    <property name="houseKeepingTestSql" value="SELECT 1 FROM DUAL" />
+	    <property name="delegateProperties" value="foo=bar" />
+    </bean>   -->
+    
+	<!-- Spring 管理数据库连接池 用于在tomcat下做测试使用 -->
+   	<bean id="eaapssoDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"   destroy-method="close">
+   		<!-- MySql -->
+        <property name="driverClass">
+			<value>${o2pCommon.jdbcDriver}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${sm_db_url}</value>
+		</property>
+		<property name="user">
+			<value>${sm_db_username}</value>
+		</property>
+		<property name="password">
+			<value>${sm_db_password}</value>
+		</property>
+         
+        <!-- Oracle --> 
+<!--        <property name="driverClass"><value>oracle.jdbc.driver.OracleDriver</value></property>-->
+
+<!--        <property name="jdbcUrl"><value>jdbc:oracle:thin:@10.6.0.12:1521:opdb</value></property>-->
+<!--        <property name="user"><value>op2_sm</value></property>-->
+<!--        <property name="password"><value>op2_sm</value></property>-->
+
+<!--         <property name="jdbcUrl"><value>jdbc:oracle:thin:@10.1.6.16:1521:depdb</value></property>-->
+<!--         <property name="user"><value>xrbsm</value></property>-->
+<!--         <property name="password"><value>xrbsm</value></property>-->
+		
+         <property name="minPoolSize"><value>1</value></property>
+         <property name="maxPoolSize"><value>30</value></property>
+         <property name="maxIdleTime"><value>1800</value></property>
+         <property name="acquireIncrement"><value>2</value></property>
+         <property name="maxStatements"><value>0</value></property>
+         <property name="initialPoolSize"><value>${o2pCommon.initialSize}</value></property>
+         <property name="testConnectionOnCheckout"><value>${o2pCommon.testConnectionOnCheckout}</value></property> 
+         <property name="testConnectionOnCheckin"><value>${o2pCommon.testConnectionOnCheckin}</value></property> 
+         <property name="breakAfterAcquireFailure"><value>${o2pCommon.breakAfterAcquireFailure}</value></property>
+         <property name="idleConnectionTestPeriod"><value>${o2pCommon.idleConnectionTestPeriod}</value></property>
+         <property name="acquireRetryAttempts"><value>${o2pCommon.acquireRetryAttempts}</value></property>
+         <property name="acquireRetryDelay"><value>${o2pCommon.maxWait}</value></property>
+	</bean>
+
+	 <bean id="eaapConfDataSource"  class="com.mchange.v2.c3p0.ComboPooledDataSource"   destroy-method="close">
+        <property name="driverClass"><value>${o2pCommon.jdbcDriver}</value></property>
+		<property name="jdbcUrl"><value>${o2pCommon.database}</value></property>
+		<property name="user"><value>${o2pCommon.user}</value></property>
+		<property name="password"><value>${o2pCommon.password}</value></property>
+         <property name="minPoolSize"><value>1</value></property>
+         <property name="maxPoolSize"><value>${o2pCommon.maxActive}</value></property>
+         <property name="maxIdleTime"><value>1800</value></property>
+         <property name="acquireIncrement"><value>2</value></property>
+         <property name="maxStatements"><value>0</value></property>
+         <property name="initialPoolSize"><value>${o2pCommon.initialSize}</value></property>
+         <property name="testConnectionOnCheckout"><value>${o2pCommon.testConnectionOnCheckout}</value></property> 
+         <property name="testConnectionOnCheckin"><value>${o2pCommon.testConnectionOnCheckin}</value></property> 
+         <property name="breakAfterAcquireFailure"><value>${o2pCommon.breakAfterAcquireFailure}</value></property>
+         <property name="idleConnectionTestPeriod"><value>${o2pCommon.idleConnectionTestPeriod}</value></property>
+         <property name="acquireRetryAttempts"><value>${o2pCommon.acquireRetryAttempts}</value></property>
+         <property name="acquireRetryDelay"><value>${o2pCommon.maxWait}</value></property>
+	</bean>
+	
+	<!--  JBoos MySql 数据库连接池 
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean" abstract="false" singleton="true" lazy-init="default" autowire="default" dependency-check="default">
+		<property name="jndiName">
+			<value>java:CAR_DS</value>	
+    	</property>
+	</bean>
+	-->
+ 	<!--  Tomcat 数据库连接池 
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean" abstract="false" singleton="true" lazy-init="default" autowire="default" dependency-check="default">
+		<property name="jndiName">
+			<value>java:comp/env/TLC_DS</value>
+		</property>
+	</bean>
+	-->
+	
+	<!--  Weblogic 数据库连接池  
+	 
+	<bean id="dsJndiTemplate" class="org.springframework.jndi.JndiTemplate" abstract="false" singleton="true" lazy-init="default" autowire="default" dependency-check="default">
+        <property name="environment">
+            <props>
+                <prop key="java.naming.provider.url">t3://127.0.0.1:7001</prop>
+                <prop key="java.naming.factory.initial">weblogic.jndi.WLInitialContextFactory</prop>
+                <prop key="java.naming.security.principal">weblogic</prop>
+                <prop key="java.naming.security.credentials">weblogic</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean" abstract="false" singleton="true" lazy-init="default" autowire="default" dependency-check="default">
+        <property name="jndiTemplate">
+            <ref local="dsJndiTemplate"/>
+        </property>
+        <property name="jndiName">
+       
+            <value>TLC_DX</value>  
+        </property>
+    </bean>
+    --> 
+
+	<!--  JNDI连接池    java:comp/env/ -->
+<!--	<bean id="eaapssoDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">-->
+<!--	    <property name="jndiName">-->
+<!--	        <value>java:comp/env/jndi/eaap_sso</value>-->
+<!--	        <value>java:comp/env/jndi/xrbsm</value>-->
+<!--			<value>java:comp/env/jndi/op2_sm</value>-->
+<!--	    </property>-->
+<!--	</bean> -->
+	<!--
+	 <bean id="eaapssoDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiName">
+	        <value>${eaapsm.jndiName}</value>
+	    </property>
+	    <property name="resourceRef"> 
+ 			 <value>true</value>
+		 </property>
+	</bean> -->
+	
+    <!-- Spring iBatis相关 -->
+  	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"/>
+  	
+
+  	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean" abstract="false" scope="singleton" lazy-init="default" autowire="default" dependency-check="default">
+  		<description>Spring iBatis结合</description>
+    	<property name="configLocation" value="classpath:sqlMap-config.xml"/>
+    	<!-- 新修改配置 -->
+    	<property name="mappingLocations">
+    			<list>
+    			    <value>classpath:/ibatis/${databaseType}/eaap-op2-sso-main-sqlmap.xml</value>
+    			    <value>classpath:/ibatis/${databaseType}/eaap-op2-sso-menu-sqlmap.xml</value>
+    	            <value>classpath:/ibatis/model/${databaseType}/*-sqlmap.xml</value>
+    	        </list>
+    	</property>
+    	<!-- //////////新修改配置 -->
+    	<property name="dataSource" ref="eaapssoDataSource"/>
+    	<property name="lobHandler" ref="lobHandler"/>
+  	</bean>
+  	
+  	<bean id="sqlMapClientConf" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean" abstract="false" scope="singleton" lazy-init="default" autowire="default" dependency-check="default">
+  		<description>Spring iBatis结合</description>
+    	<property name="configLocation" value="classpath:sqlMap-config.xml"/>
+    	<!-- 新修改配置 -->
+    	<property name="mappingLocations">
+    			<list>
+    			    <value>classpath:/ibatis/${databaseType}/eaap-op2-sso-main-sqlmap.xml</value>
+    			    <value>classpath:/ibatis/${databaseType}/eaap-op2-sso-menu-sqlmap.xml</value>
+    	            <value>classpath:/ibatis/model/${databaseType}/*-sqlmap.xml</value>
+    	        </list>
+    	</property>
+    	<!-- //////////新修改配置 -->
+    	<property name="dataSource" ref="eaapConfDataSource"/>
+    	<property name="lobHandler" ref="lobHandler"/>
+  	</bean>
+  	
+  	<bean id="iBatisSqlMapDAO" class="com.linkage.rainbow.dao.impl.IBatisSqlMapDAOImpl" scope="prototype" >
+		<description>sso数据库基础操作工具包</description>
+		<property name="sqlMapClient" ref="sqlMapClient"/>
+	</bean>
+	
+  	<bean id="iBatisSqlMapDAOConf" class="com.linkage.rainbow.dao.impl.IBatisSqlMapDAOImpl" scope="prototype" >
+		<description>conf数据库基础操作工具包</description>
+		<property name="sqlMapClient" ref="sqlMapClientConf"/>
+	</bean>
+	
+	<!-- memcached相关的配置 -->
+	<bean  id="xMemcachedClientFactoryBean"   name="o2pCommons.runtimeMemcachedClient" class="net.rubyeye.xmemcached.utils.XMemcachedClientFactoryBean" destroy-method="shutdown">
+		<property name="servers">
+			<value>${memcache.runtimeserver}</value>
+		</property>
+				
+		<!-- nio connection pool size -->
+		<property name="connectionPoolSize"><value>${memcache.runtimeconnectionPoolSize}</value></property>
+
+		<!-- Distributed strategy -->
+		<property name="sessionLocator">
+			<bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"></bean>
+		</property>
+	
+		<!-- ByteBuffer allocator -->
+		<property name="bufferAllocator">
+			<bean class="net.rubyeye.xmemcached.buffer.SimpleBufferAllocator"></bean>
+		</property>
+		<!-- Failure mode -->
+		<property name="failureMode"><value>${memcache.runtimefailureMode}</value></property>
+		<property name="opTimeout"><value>${memcache.runtimeOpTimeout}</value></property>
+	</bean>
+  	
+  	
+   	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" scope="singleton" >
+  		<description>Spring 事务管理</description>
+    	<property name="dataSource" ref="eaapssoDataSource"/>
+  	</bean>  	
+  	
+  	<!-- 系统事务处理AOP配置 -->
+	<aop:config proxy-target-class="false">
+		<!-- 需事务控制切入点 -->
+		<aop:pointcut id="txPointcut" expression="execution(* com.ailk.eaap.op2.sso.main.dao.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+	</aop:config>
+	<!-- 系统事务控制配置 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager" >
+		<tx:attributes>
+			<tx:method name="insert*" propagation="NESTED" rollback-for="Exception"/>
+			<tx:method name="add*" propagation="NESTED" rollback-for="Exception"/>
+			<tx:method name="do*" propagation="NESTED" rollback-for="Exception"/>
+			<tx:method name="update*" propagation="NESTED" rollback-for="Exception"/>
+			<tx:method name="modify*" propagation="NESTED" rollback-for="Exception"/>
+			<tx:method name="edit*" propagation="NESTED" rollback-for="Exception"/>
+			<tx:method name="del*" propagation="NESTED" rollback-for="Exception"/>
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="find*" read-only="true"/>
+			<tx:method name="query*" read-only="true"/>
+			<tx:method name="search*" read-only="true"/>
+			<tx:method name="select*" read-only="true"/>
+			<tx:method name="count*" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+	<!--
+		Spring中常用事务类型：
+			REQUIRED	支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。
+			SUPPORTS	支持当前事务，如果当前没有事务，就以非事务方式执行。
+			MANDATORY	支持当前事务，如果当前没有事务，就抛出异常。
+			REQUIRES_NEW	新建事务，如果当前存在事务，把当前事务挂起。
+			NOT_SUPPORTED	以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+			NEVER	以非事务方式执行，如果当前存在事务，则抛出异常。
+			NESTED	如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则进行与PROPAGATION_REQUIRED类似的操作。 
+	 -->
+
+	 <bean id="springContextUtil" class="com.ailk.eaap.op2.util.SpringContextUtil" />
+	 
+</beans>

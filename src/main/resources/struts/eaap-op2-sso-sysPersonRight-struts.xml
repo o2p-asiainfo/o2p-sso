@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+	
+<struts>
+	<package name="sysPersonRight" extends="default" namespace="/sysPersonRight">
+		<action name="showSysPersonRight" class="com.ailk.eaap.op2.sso.main.action.SysPersonRightAction" method="preShow">
+			<result name="success">/personRight/personRightManage.jsp</result>
+		</action>
+		<action name="showAddSysPersonRight" class="com.ailk.eaap.op2.sso.main.action.SysPersonRightAction" method="preAdd">
+			<result name="success">/personRight/personRightAdd.jsp</result>
+		</action>
+		<action name="addSysPersonRight" class="com.ailk.eaap.op2.sso.main.action.SysPersonRightAction" method="addSysPersonRight">
+			<result name="success" type="redirectAction">
+				<param name="actionName">showSysPersonRight</param>
+			</result>
+		</action>
+		<action name="deleteSysPersonRight" class="com.ailk.eaap.op2.sso.main.action.SysPersonRightAction" method="deleteSysPersonRight">
+		</action>
+		<action name="showUpdateSysPersonRight" class="com.ailk.eaap.op2.sso.main.action.SysPersonRightAction" method="preUpdate">
+			<result name="success">/personRight/personRightUpdate.jsp</result>
+		</action>
+		<action name="updateSysPersonRight" class="com.ailk.eaap.op2.sso.main.action.SysPersonRightAction" method="updateSysPersonRight">
+			<result name="success" type="redirectAction">
+				<param name="actionName">showSysPersonRight</param>
+			</result>
+		</action>
+	</package>
+	
+</struts>

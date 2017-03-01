@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="sysPerson" location="242,165" size="770,420">
+    <action name="showSysPerson" location="65,57" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="personManage.jsp" />
+      </result>
+    </action>
+    <action name="showAddSysPerson" location="65,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="personAdd.jsp" />
+      </result>
+    </action>
+    <action name="addSysPerson" location="65,337" size="150,41">
+      <result name="success" />
+    </action>
+    <action name="deleteSysPerson" location="310,338" size="150,40" />
+    <action name="showUpdateSysPerson" location="310,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="personUpdate.jsp" />
+      </result>
+    </action>
+    <action name="updateSysPerson" location="555,232" size="150,41">
+      <result name="success" />
+    </action>
+  </package>
+  <webResource name="personManage.jsp" path="/person/personManage.jsp" location="10,185" size="150,55" />
+  <webResource name="personAdd.jsp" path="/person/personAdd.jsp" location="22,360" size="150,55" />
+  <webResource name="personUpdate.jsp" path="/person/personUpdate.jsp" location="537,10" size="150,55" />
+</Struts2Diagram>
+

@@ -1,0 +1,480 @@
+@charset "utf-8";
+
+/* CSS Document */
+body {
+	min-width: 1000px;
+}
+body,ul,li,table {
+	margin: 0.6px;
+	padding: 0;
+	list-style-type: none;
+	overflow-x:auto;
+}
+*{
+    font-family: "微软雅黑";
+    font-size: 14px;
+}
+a{
+	text-decoration: none;
+}
+#head {
+	background-repeat: repeat-x;
+	height: 62px;
+	/*width: 1344px;*/
+	width: 100%;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+	position: relative;
+	overflow: hidden;
+}
+
+#logo {
+	background-repeat: no-repeat;
+	float: left;
+	height: 43px;
+	width: 400px;
+	margin-top: 11px;
+	margin-left: 55px;
+}
+
+#login {
+	text-align:right;
+	font-family: "微软雅黑";
+	font-size: 12px;
+	color: #3da4ea;
+	text-decoration: none;
+	float: left;
+	height: 24px;
+	width: 33%;
+	margin-top: 23px;
+	margin-left: 2%;
+	position: relative;
+}
+
+#welcome {
+	float: left;
+	height: 24px;
+	width: 80%;
+	text-align: center;
+	line-height: 24px;
+}
+
+#login01 {
+	float: right;
+	height: 24px;
+	width: 15%;
+}
+
+#text {
+	float: left;
+	height: 24px;
+	width: 50%;
+	text-align: center;
+	line-height: 24px;
+}
+
+#topmenu {
+	font-family: "方正兰亭中黑_GBK";
+	font-size: 14px;
+	color: #3b90b7;
+	text-decoration: none;
+	background-repeat: repeat-x;
+	height: 32px;
+	/*width: 1344px;*/
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#menu ul {
+	list-style-type: none;
+}
+
+#menu ul li {
+	width: 124px;
+	text-align: center;
+	float:left;
+	padding-top: 3px;
+	display: block;
+}
+#menu ul li a{
+	text-decoration: none;
+	
+}
+#img-menu{
+	background-image: url(../../images/break_06.png);
+	background-repeat: no-repeat;
+	float: left;
+	height: 13px;
+	width: 1%;
+	margin-top: 9px;
+	margin-left: 10px;
+	overflow: hidden;
+	position: relative;
+	
+}
+
+
+.subView ul li a{
+	font-weight: normal;
+}
+ul li a{
+	color: #FFF;
+	font-weight: bold;
+}
+.backgroundUrl{
+	background:url(../../images/menu-hover_03.png); 
+	background-repeat:no-repeat ;
+}
+.firstMenuColor{
+	color: #404040;
+}
+
+
+li {
+	float: left;
+}
+
+#xiaosanjiao {
+	background-repeat: no-repeat;
+	float: left;
+	height: 13px;
+	width: 1%;
+	margin-top: 9px;
+	margin-left: 10px;
+	overflow: hidden;
+	position: relative;
+}
+
+#xiaosanjiao02 {
+	background-repeat: no-repeat;
+	float: right;
+	height: 13px;
+	width: 1%;
+	margin-top: 9px;
+	margin-right: 10px;
+	overflow: hidden;
+	position: relative;
+}
+
+#menu {
+	float: left;
+	height: 28px;
+	width: 90%;
+	margin-left: 31px;
+	margin-top: 4px;
+	font-family: "微软雅黑";
+	font-size: 14px;
+	color: #3b90b7;
+	position: relative;
+	overflow: hidden;
+}
+
+.menutext {
+	text-align: center;
+	text-decoration: none;
+}
+
+#sidemenu {
+	background-color: #f3f7f9;
+	float: left;
+	min-height: 525px;
+	width: 160px;
+	overflow: hidden;
+	position: relative;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: inset;
+	border-left-style: none;
+	border-color: #f3f7f9;
+}
+#sidemenu li{
+	width:100%;
+}
+#sidemenu li.curr{
+	background: none repeat scroll 0 0 #6C5143;
+    border-bottom: 1px solid #6C5143;
+    border-top: 1px solid #6C5143;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+#sidemenu li:hover{
+	
+}
+#sidemenu li.alt{
+	background: none repeat scroll 0 0 #F1F1F1;
+}
+
+.menuhover {
+	height: 85px;
+	width: 100%;
+	background-repeat: repeat-x;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 1px;
+	border-left-width: 0px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: solid;
+	border-left-style: none;
+	border-top-color: #f3f7f9;
+	border-right-color: #f3f7f9;
+	border-bottom-color: #b9ddec;
+	border-left-color: #f3f7f9;
+	overflow: hidden;
+	position: relative;
+}
+
+#sidemenu a{
+	text-decoration: none;
+	color:#000;
+}
+#menuside {
+	height: 85px;
+	width: 150px;
+	background-repeat: no-repeat;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 1px;
+	border-left-width: 0px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: solid;
+	border-left-style: none;
+	border-top-color: #FFF;
+	border-right-color: #FFF;
+	border-bottom-color: #cccccc;
+	border-left-color: #FFF;
+	overflow: hidden;
+	position: relative;
+}
+
+
+.text01 {
+    color: #FFFFFF;
+    float: left;
+    font-family: "微软雅黑";
+    font-size: 14px;
+    height: 13px;
+    line-height: 28px;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    margin-left: 0;
+    
+}
+*.text01{
+	
+}
+
+.icon {
+	float: left;
+	width: 90%;
+	height: 85px;
+	overflow: hidden;
+	position: relative;
+}
+
+.bg{
+	background-color: #f3f7f9;
+	float: right;
+	width: 8%;
+	position: relative;
+	height: 85px;
+}
+
+#login01 {
+	float: right;
+	height: 24px;
+	width: 10%;
+	margin-right: 22px;
+	margin-top: 22px;
+}
+
+#login2 {
+    background-repeat: no-repeat;
+    color: #FFFFFF;
+    float: right;
+    font-family: "微软雅黑";
+    font-size: 14px;
+    height: 22px;
+    line-height: 24px;
+    margin-right: 2%;
+    margin-top: 22px;
+    text-decoration: none;
+    width: 56px;
+    overflow: hidden;
+}
+#login2 ul li a{
+	margin-left:25px;
+	color:#a5a6aa;
+}
+#tuichu {
+	font-family: "微软雅黑";
+	font-size: 14px;
+	color: #FFF;
+	float: right;
+	height: 16px;
+	width: 30px;
+	margin-top: 3px;
+	margin-left: 0px;
+	margin-right: 70px;
+	line-height: 16px;
+}
+.icon01 {
+	background-repeat: no-repeat;
+	float: left;
+	height: 30px;
+	width: 30px;
+	margin-left: 58px;
+	margin-top: 19px;
+}
+#content {
+	min-height: 525px;
+	/*width: 1344px;*/
+	width: 100%;
+	border-top-width: 2px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: solid;
+	border-top-color: #b9ddec;
+	border-right-color: #b9ddec;
+	border-bottom-color: #b9ddec;
+	border-left-color: #b9ddec;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.Z_SubList {
+	background:#fff;
+    border: 1px solid #B9DDEC;
+    box-shadow: 2px 2px 5px #888888;
+    display: none;
+    min-height: 300px;
+    min-width: 155px;
+    overflow: visible;
+    position: absolute;
+    z-index: 999;
+}
+.Z_SubList .subView {
+    height: auto;
+    padding: 10px 10px 1px 0;
+    /*width: 100px;*/
+    width: auto;
+}
+.subView ul {
+	margin-top: 1px;
+}
+.subView ul li {
+    display: block;
+    float: left;
+    height: 20px;
+    margin-left: 10px;
+    /*width: 155px;*/
+    border-bottom:1px solid #B9DDEC;
+    border-width: 100%;
+}
+.subView ul li a{
+   color:#000;
+}
+.subView ul li a:hover{
+	color: #3da4ea;
+}
+
+#righthtml {
+	min-height:525px;
+    height: 100%;
+    margin-left: 165px;
+    margin-top: 5px;
+}
+
+#iframe1 {
+	/*height:1500px;*/
+	min-height : 525px;
+    display: none;
+    margin-left: 162px;
+    margin-top: -529px;
+    position: absolute;
+    /*width: 87%;*/
+}
+.menuhoverBack {
+	height: 85px;
+	width: 100%;
+	background-repeat: repeat-x;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 1px;
+	border-left-width: 0px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: solid;
+	border-left-style: none;
+	border-top-color: #FFF;
+	border-right-color: #FFF;
+	border-bottom-color: #b9ddec;
+	border-left-color: #FFF;
+	overflow: hidden;
+	position: relative;
+}
+.bgBack{
+	background:url("../images/menu2_09_03.png") !important;
+	float: right;
+	width: 8%;
+	position: relative;
+	height: 85px;
+}
+.icon01Back {
+	background: url("../images/baseMessage1.png")!important;
+	background-repeat: no-repeat;
+	float: left;
+	height: 30px;
+	width: 30px;
+	margin-left: 58px;
+	margin-top: 19px;
+}
+.text01Back {
+    color: #FFFFFF;
+    
+}
+#helo{
+	height:525px;
+	position: relative;
+	overflow: hidden;
+}
+#helo01{
+	height:100px;
+	background-repeat: no-repeat;
+	margin-left: 100px;
+	margin-top: 100px;
+	
+}
+#helo02{
+	height:100px;
+	background-repeat: no-repeat;
+	margin-left: 1000px;
+	margin-top: 180px;
+	
+}
+#systemSwith{
+	margin-top:21px;
+	margin-left:7%;
+	float:left;
+	width:13%;
+	
+}
+#businessSystem{
+	width:100%;
+	color:#666666;
+}

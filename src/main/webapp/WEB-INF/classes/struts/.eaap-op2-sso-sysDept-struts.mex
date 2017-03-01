@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="sysDept" location="10,10" size="280,140">
+    <action name="showSysDept" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="deptManage.jsp" />
+      </result>
+    </action>
+    <action name="showAddSysDept" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="deptAdd.jsp" />
+      </result>
+    </action>
+    <action name="addSysDept" location="0,0" size="0,0">
+      <result name="success" />
+    </action>
+    <action name="deleteSysDept" location="0,0" size="0,0" />
+    <action name="showUpdateSysDept" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="deptUpdate.jsp" />
+      </result>
+    </action>
+    <action name="updateSysDept" location="0,0" size="0,0">
+      <result name="success" />
+    </action>
+  </package>
+  <webResource name="deptManage.jsp" path="/department/deptManage.jsp" location="51,205" size="150,55" />
+  <webResource name="deptAdd.jsp" path="/department/deptAdd.jsp" location="0,0" size="0,0" />
+  <webResource name="deptUpdate.jsp" path="/department/deptUpdate.jsp" location="0,0" size="0,0" />
+</Struts2Diagram>
+

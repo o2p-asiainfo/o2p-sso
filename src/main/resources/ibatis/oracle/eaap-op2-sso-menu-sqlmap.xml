@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="eaap-op2-sso-menu">
+	<!-- 菜单展示 -->
+	<select id="queryMenuInfoBO" parameterClass="java.util.HashMap" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfoBO">
+	    SELECT SF.FUNCTION_ID menuId,
+		       SF.FUNCTION_NAME menuName,
+		       SF.URL menuHref,
+		       SF.SHOWNUM showNum,
+		       SF.DISPLAY_MODE displayMode
+		  FROM (SELECT SF.FUNCTION_ID
+		          FROM SYS_ROLE SRO, SYS_ROLE_FUNCTION SRF, SYS_FUNCTION SF
+		         WHERE SRO.SYS_ROLE_ID IN
+		               (SELECT SR.SYS_ROLE_ID
+		                  FROM SYS_RIGHT SR
+		                 WHERE SR.SYS_PERSON_ID = #sysPersonId#)
+		           AND SRO.SYS_ROLE_ID = SRF.ROLE_ID
+		           AND SF.FUNCTION_ID = SRF.FUNCTION_ID
+		        UNION
+		        SELECT SR.FUNCTION_ID
+		          FROM SYS_RIGHT SR
+		         WHERE SR.SYS_PERSON_ID = #sysPersonId#) A,
+		       SYS_FUNCTION SF
+		 WHERE A.FUNCTION_ID IN
+		       (SELECT SF.FUNCTION_ID
+		          FROM SYS_FUNCTION SF, SYS_BUSINESS_SYSTEM SBS
+		         WHERE SBS.BUSINESS_SYSTEM_ID = #businessSystemId#
+		           AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID)
+		   AND A.FUNCTION_ID = SF.FUNCTION_ID
+		   AND SF.SYS_STATUS_ID = 1 AND SF.TENANT_ID = #tenantId#
+		   AND SF.PARENT_FUNCTION_ID = #parentMenuId#
+	  ORDER BY SF.SHOWNUM
+	</select>
+	<select id="queryMenuInfoBOEn" parameterClass="java.util.HashMap" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfoBO">
+		SELECT DISTINCT(SF.FUNCTION_ID) menuId, SF.FUNCTION_EN_NAME menuName, SF.URL menuHref, SF.SHOWNUM showNum ,SF.DISPLAY_MODE displayMode, 
+			(SELECT count(1) 
+			 FROM sys_function f,(SELECT r.function_id,r.sys_person_id from sys_right r GROUP BY r.function_id,r.sys_person_id) r
+			 WHERE f.function_id = r.function_id
+				and r.sys_person_id = 1
+				and f.parent_function_id=SF.FUNCTION_ID
+				and f.sys_status_id =1) as subNum  
+		FROM SYS_FUNCTION SF, SYS_RIGHT SR, SYS_BUSINESS_SYSTEM SBS 
+		WHERE SR.SYS_PERSON_ID = #sysPersonId# AND SF.PARENT_FUNCTION_ID = #parentMenuId# AND SBS.BUSINESS_SYSTEM_ID = #businessSystemId#
+			AND SR.FUNCTION_ID = SF.FUNCTION_ID AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID
+			AND SF.SYS_STATUS_ID=1 AND SF.TENANT_ID = #tenantId#
+		ORDER BY SF.SHOWNUM	
+	</select>
+	<!-- 菜单展示 -->
+	<select id="queryMenuInfoBO2" parameterClass="java.util.HashMap" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfoBO">
+	    SELECT SF.FUNCTION_ID menuId,
+		       SF.FUNCTION_NAME menuName,
+		       SF.URL menuHref,
+		       SF.SHOWNUM showNum,
+		       SF.DISPLAY_MODE displayMode
+		  FROM (SELECT SF.FUNCTION_ID
+		          FROM SYS_ROLE SRO, SYS_ROLE_FUNCTION SRF, SYS_FUNCTION SF
+		         WHERE SRO.SYS_ROLE_ID IN
+		               (SELECT SR.SYS_ROLE_ID
+		                  FROM SYS_RIGHT SR
+		                 WHERE SR.SYS_PERSON_ID = #sysPersonId#)
+		           AND SRO.SYS_ROLE_ID = SRF.ROLE_ID
+		           AND SF.FUNCTION_ID = SRF.FUNCTION_ID
+		        UNION
+		        SELECT SR.FUNCTION_ID
+		          FROM SYS_RIGHT SR
+		         WHERE SR.SYS_PERSON_ID = #sysPersonId#) A,
+		       SYS_FUNCTION SF
+		 WHERE A.FUNCTION_ID IN
+		       (SELECT SF.FUNCTION_ID
+		          FROM SYS_FUNCTION SF, SYS_BUSINESS_SYSTEM SBS
+		         WHERE SBS.BUSINESS_SYSTEM_ID = #businessSystemId#
+		           AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID)
+		   AND A.FUNCTION_ID = SF.FUNCTION_ID
+		   AND SF.SYS_STATUS_ID = 1 AND SF.TENANT_ID = #tenantId#
+		   AND SF.PARENT_FUNCTION_ID = #parentMenuId#
+	  ORDER BY SF.SHOWNUM DESC
+	</select>
+	<select id="queryMenuInfoBOEn2" parameterClass="java.util.HashMap" resultClass="com.ailk.eaap.op2.sso.main.bo.MenuInfoBO">
+	   SELECT DISTINCT(SF.FUNCTION_ID) menuId, SF.FUNCTION_EN_NAME menuName, SF.URL menuHref, SF.SHOWNUM showNum ,SF.DISPLAY_MODE displayMode,
+			(SELECT count(1) 
+			 FROM sys_function f,(SELECT r.function_id,r.sys_person_id from sys_right r GROUP BY r.function_id,r.sys_person_id) r
+			 WHERE f.function_id = r.function_id
+				and r.sys_person_id = 1
+				and f.parent_function_id=SF.FUNCTION_ID
+				and f.sys_status_id =1) as subNum    
+	     FROM SYS_FUNCTION SF, SYS_RIGHT SR, SYS_BUSINESS_SYSTEM SBS
+		WHERE SR.SYS_PERSON_ID = #sysPersonId# AND SF.PARENT_FUNCTION_ID = #parentMenuId# AND SBS.BUSINESS_SYSTEM_ID = #businessSystemId#
+		  AND SR.FUNCTION_ID = SF.FUNCTION_ID AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID
+		  AND SF.SYS_STATUS_ID=1 AND SF.TENANT_ID = #tenantId#
+		  ORDER BY SF.SHOWNUM	DESC
+	</select>
+	
+<!--	 SELECT DISTINCT(SF.FUNCTION_ID) menuId, SF.FUNCTION_NAME menuName, SF.URL menuHref, SF.SHOWNUM showNum ,SF.DISPLAY_MODE displayMode        -->
+<!--	     FROM SYS_FUNCTION SF, SYS_RIGHT SR, SYS_BUSINESS_SYSTEM SBS-->
+<!--		WHERE SR.SYS_PERSON_ID = #sysPersonId# AND SF.PARENT_FUNCTION_ID = #parentMenuId# AND SBS.BUSINESS_SYSTEM_ID = #businessSystemId#-->
+<!--		  AND SR.FUNCTION_ID = SF.FUNCTION_ID AND SF.BUSINESS_SYSTEM_ID = SBS.BUSINESS_SYSTEM_ID-->
+<!--		  AND SF.SYS_STATUS_ID=1-->
+<!--		  ORDER BY SF.SHOWNUM	-->
+</sqlMap> 

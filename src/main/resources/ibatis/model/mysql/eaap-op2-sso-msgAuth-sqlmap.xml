@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="eaap-op2-sso-msgAuth">
+    <!-- 相应用户插入一条新的短信验证码	-->
+	<insert id="insertMsgAuth" parameterClass="java.util.Map">
+		INSERT INTO MSG_AUTH MA (MA.MSG_AUTH_ID, MA.SYS_PERSON_ID, MA.MSG_CODE, MA.CREATE_TIME, MA.INVALID_TIME, MA.STATE) 
+    		 VALUES (SEQ_MSG_AUTH.NEXTVAL, #sysPersonId#, #authCode#, sysdate, sysdate+1/24/60*#authCodeTimeout#,'Y')
+	</insert>
+	
+    <!-- 更新相应用户短信验证码状态为废弃	-->
+	<update id="updateMsgAuth" parameterClass="String">
+		UPDATE MSG_AUTH MA SET MA.STATE='N' where MA.SYS_PERSON_ID =#sysPersonId#
+	</update>
+		  
+	<!-- 查询相应用户短信验证码 -->
+	<select id="queryAuthCodeBySysperId" parameterClass="String" resultClass="String">
+		 <![CDATA[ SELECT MA.MSG_CODE from MSG_AUTH MA where MA.STATE='Y' and MA.INVALID_TIME>=sysdate and MA.SYS_PERSON_ID=#sysPersonId# ]]>
+	</select>
+</sqlMap> 

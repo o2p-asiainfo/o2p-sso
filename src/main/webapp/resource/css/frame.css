@@ -1,0 +1,41 @@
+/* here you can put your own css to customize and override the theme */
+body{overflow: hidden;}
+.navbar-brand { padding: 0 15px!important; }
+.logo-v1 img { -moz-transition: all 0.3s ease-in-out; -webkit-transition: all 0.3s ease-in-out; -o-transition: all 0.3s ease-in-out; transition: all 0.3s ease-in-out; }
+.header.scrolling-fixed a.logo-v1 img { margin-top: 2px!important; }
+.tp-bannertimer { background: #ff8503; opacity: 0.65 }
+
+.header .nav li.s-login-link span.sep { top: 10px; width: 1px; height: 31px; background: #eee; position: relative; margin: 0 12px 0 5px; display: inline-block; }
+.header .navbar-nav li.s-login-link { padding: 15px 0; color: #bbb; -moz-transition: padding 0.3s ease-in-out; -webkit-transition: padding 0.3s ease-in-out; -o-transition: padding 0.3s ease-in-out; transition: padding 0.3s ease-in-out; }
+.header .navbar-nav li.s-login-link a { color: #bbb; display: inline; font-size: 13px; text-shadow: none; position: relative; padding: 0!important; border-top: none!important; -moz-transition: padding 0.3s ease-in-out; -webkit-transition: padding 0.3s ease-in-out; -o-transition: padding 0.3s ease-in-out; transition: padding 0.3s ease-in-out; }
+.header.scrolling-fixed .nav li a { padding: 14px 16px; }
+.header.scrolling-fixed .navbar-nav li.s-login-link { padding: 0!important; }
+.header .s-user-box { right: 0!important; left: auto!important; top: 100%; padding: 10px; display: none; background: #fff; position: absolute; border: solid 1px #eee; border-top: none !important; margin-top: 10px; }
+.scrolling-fixed .s-user-box { margin-top: 15px; }
+.s-login-link:hover .s-user-box { display: block; padding: 0!important; min-width: auto!important; }
+.tab-style-3 .tab-content { margin: 20px 0!important; }
+.header .navbar-nav li.s-login-link.logined { padding: 0!important; }
+.header .nav li.s-login-link.logined span.sep { top: 25px; width: 1px; height: 31px; background: #eee; position: absolute; display: inline-block; transition: All 0.3s ease-in-out 0s; }
+.header .navbar-nav li.s-login-link.logined > a { color: #bbb; display: block; font-size: 15px; font-weight: 400; border-top: 2px solid #fff!important; padding: 26px 16px 27px!important; position: relative; text-shadow: none; transition: padding 0.3s ease-in-out 0s; }
+.header .navbar-nav li.s-login-link.logined > a:hover { border-top: 2px solid #038cd6 !important; }
+.header li.s-login-link.logined .dropdown-menu li a { padding: 9px 15px!important; display: block!important; }
+.header.scrolling-fixed .navbar-nav li.s-login-link.logined a { padding: 14px 16px!important; }
+.header.scrolling-fixed .nav li.s-login-link.logined span.sep { top: 18px; height: 21px; }
+
+/***
+Top bar menu
+***/
+
+/* enable arrow for dropdown menu */
+.static .header.navbar .nav > li, .static .header .navbar-collapse {position: static;}
+.static .navbar-nav .mega-menu-full .dropdown-menu{width: auto; position: absolute; left: 20px; right: 20px;}
+.navbar-nav .nav-content-col{width: auto; border:0px solid #f00; padding:0; margin:0px  2px 0 2px; float:left; }
+.navbar-nav .nav-content-col a{width: 200px; display:block; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;}
+.nav-content-col ul{margin:0; padding:0;}
+.nav-content-col2 ul{width: 400px;}
+.nav-content-col2 ul li{width: 200px; float:left;}
+.nav-content-col h3{ width: 200px;text-overflow: ellipsis;  white-space: nowrap;  overflow: hidden;}
+.nav-content-col2 h3{ width: 400px;text-overflow: ellipsis;  white-space: nowrap;  overflow: hidden;}
+
+.header .nav li > a:hover{text-decoration: none;}
+.dropdown-menu[aria-labelledby="mega-menu"]{width: 646px;}

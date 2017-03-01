@@ -1,0 +1,67 @@
+@charset "utf-8";
+/* CSS Document */
+body { margin:0 }
+
+#back-img {
+	background-image: url(../images/background.jpg);
+	background-repeat: no-repeat;
+	margin: auto;
+	height: 648px;
+	width: 1280px;
+}
+
+#container {
+	background-image: none;
+	margin: auto;
+	height: 648px;
+	width: 1000px;
+}
+
+
+#content01 {
+	height: 466px;
+	width: 1000px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+}
+#footer{
+	height: 58px;
+	width: 1000px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+}
+#content01a {
+	float: left;
+	height: 466px;
+	width: 581px;
+}
+#content01b {
+	margin: auto;
+	float: right;
+	height: 466px;
+	width: 419px;
+}
+#login {
+	margin: 0px;
+	float: left;
+	height: 466px;
+	width: 233px;
+}
+.log-text{ font-family:"宋体"; font-size:12px; font-weight:bolder;color:#666666; word-spacing:normal}
+.log-input{ width:150px; height:20px; border:solid 1px #CCC}
+.log-input01{ width:60px; height:20px; border:solid 1px #CCC}
+.bottom{ background-image:url(../images/bottom_03_03.png); width:90px; height:30px; }
+.footer-text{ font-family:"宋体"; font-size:12px; color:#003399; width:232px; height:17px; margin:auto;}
+#name {
+	font-family: "方正兰亭中黑_GBK";
+	font-size: 18px;
+	color: #003399;
+}
+#name1{
+	font-family:"方正兰亭中黑_GBK";
+	font-size:9px;
+}

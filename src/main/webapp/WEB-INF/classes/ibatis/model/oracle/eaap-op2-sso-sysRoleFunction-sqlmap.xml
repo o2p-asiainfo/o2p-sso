@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysRoleFunction">
+	
+	
+	<!-- 查出符合条件的全部角色权限信息	-->
+	<select id="queryAllSysRoleFunction"  parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 SELECT * FROM (
+			             SELECT ROWNUM RNUM, SRF.SYS_ROLE_FUNC_ID, SRF.ROLE_ID, SRF.FUNCTION_ID, SR.SYS_ROLE_NAME, SF.FUNCTION_NAME 
+			               FROM SYS_ROLE_FUNCTION SRF, SYS_ROLE SR, SYS_FUNCTION SF 
+			              WHERE SRF.ROLE_ID=SR.SYS_ROLE_ID AND SRF.FUNCTION_ID=SF.FUNCTION_ID 
+			              <isNotEmpty prepend=" AND " property="roleId"> ROLE_ID=#roleId#</isNotEmpty> ) 
+        		 WHERE RNUM BETWEEN #startRow# AND (#startRow# + #rows# - 1)
+     		  ORDER BY SYS_ROLE_FUNC_ID
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_ROLE_FUNCTION SRF, SYS_ROLE SR, SYS_FUNCTION SF 
+			           WHERE SRF.ROLE_ID=SR.SYS_ROLE_ID AND SRF.FUNCTION_ID=SF.FUNCTION_ID
+        			   <isNotEmpty prepend=" AND " property="roleId"> SRF.ROLE_ID=#roleId#</isNotEmpty>
+	</select>
+	
+	<!-- 删除一条角色权限 -->
+    <delete id="deleteSysRoleFunctionById" parameterClass="String">
+    	DELETE FROM SYS_ROLE_FUNCTION SRF WHERE SRF.SYS_ROLE_FUNC_ID=#sysRoleFuncId#
+    </delete>
+	
+	<!-- 根据角色Id查询出此角色未赋权的功能点 -->
+	<select id="queryNotSelectedFunctionByRoleId" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT SF.FUNCTION_ID, SF.FUNCTION_NAME
+		  FROM SYS_FUNCTION SF
+		 WHERE SF.FUNCTION_ID NOT IN
+		       (SELECT SRF.FUNCTION_ID FROM SYS_ROLE_FUNCTION SRF WHERE SRF.ROLE_ID=#roleId#)
+		   AND SF.SYS_STATUS_ID=1
+	</select>
+	
+	<!-- 查询序列值 -->
+	<select id="querySeq" resultClass="String">
+		SELECT SEQ_SYS_ROLE_FUNCTION.NEXTVAL FROM DUAL
+	</select>
+	
+	<!-- 为某角色赋权新功能点 -->
+    <insert id="insertSysRoleFunction" parameterClass="java.util.HashMap">
+    	INSERT INTO SYS_ROLE_FUNCTION (   
+    	<dynamic>
+    		<isNotEmpty property="sysRoleFuncId">SYS_ROLE_FUNC_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="roleId">ROLE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="functionId">FUNCTION_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="sysRoleFuncId"> #sysRoleFuncId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="roleId">#roleId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="functionId">#functionId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    
+</sqlMap> 

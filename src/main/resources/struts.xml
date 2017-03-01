@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="default" extends="struts-default" namespace="/">
+<!--        <interceptors>-->
+<!--			<interceptor name="loginInterceptor" class="com.ailk.eaap.op2.sso.main.action.EaapIntercept"></interceptor>-->
+<!--			<interceptor-stack name="MyDefaultInterceptorStack">-->
+<!--				<interceptor-ref name="loginInterceptor"></interceptor-ref>-->
+<!--				<interceptor-ref name="defaultStack"></interceptor-ref>-->
+<!--			</interceptor-stack>-->
+<!--		</interceptors>-->
+<!--		<default-interceptor-ref name="MyDefaultInterceptorStack">-->
+<!--		</default-interceptor-ref>   -->
+<!--		<default-action-ref name="pageNotFund"></default-action-ref>-->
+		<global-results>
+			<result name="login">/login/login.jsp</result>
+            <result name="exception-error">/error.html</result>
+        </global-results>
+        <global-exception-mappings>
+            <exception-mapping result="exception-error" exception="java.lang.Exception"></exception-mapping>
+        </global-exception-mappings>
+        <action name="pageNotFund">
+			<result>/err404.html</result>
+		</action>
+	</package>
+	<!--主struts.xml文件,此文件此用于包含各子系统的struts action配置文件 -->
+  
+	<include file="com/linkage/rainbow/ui/views/action/struts-comm-package.xml" />
+    <include file="struts/eaap-op2-sso-main-struts.xml" /> 
+    <include file="struts/eaap-op2-sso-login-struts.xml" /> 
+    <include file="struts/eaap-op2-sso-password-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysDept-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysCustomer-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysFunction-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysRole-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysRoleFunction-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysCustomerRole-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysDeptRole-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysPersonRight-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysLogLogin-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysLogOperate-struts.xml" />
+    <include file="struts/eaap-op2-sso-sysPerson-struts.xml" />
+    <include file="struts/eaap-op2-sso-user-struts.xml" /> 
+    	
+</struts>

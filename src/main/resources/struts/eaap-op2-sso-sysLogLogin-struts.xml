@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+	
+<struts>
+	<package name="sysLogLogin" extends="default" namespace="/sysLogLogin">
+		<action name="showSysLogLogin" class="com.ailk.eaap.op2.sso.main.action.SysLogLoginAction" method="preShow">
+			<result name="success">/logLogin/logLoginManage.jsp</result>
+		</action>
+	</package>
+	
+</struts>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="sysFunction" location="247,165" size="770,420">
+    <action name="showSysFunction" location="65,57" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="functionManage.jsp" />
+      </result>
+    </action>
+    <action name="showAddSysFunction" location="65,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="functionAdd.jsp" />
+      </result>
+    </action>
+    <action name="addSysFunction" location="65,337" size="150,41">
+      <result name="success" />
+    </action>
+    <action name="deleteSysFunction" location="310,338" size="150,40" />
+    <action name="showUpdateSysFunction" location="310,232" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="functionUpdate.jsp" />
+      </result>
+    </action>
+    <action name="updateSysFunction" location="555,232" size="150,41">
+      <result name="success" />
+    </action>
+  </package>
+  <webResource name="functionManage.jsp" path="/function/functionManage.jsp" location="10,185" size="150,55" />
+  <webResource name="functionAdd.jsp" path="/function/functionAdd.jsp" location="22,360" size="150,55" />
+  <webResource name="functionUpdate.jsp" path="/function/functionUpdate.jsp" location="537,10" size="150,55" />
+</Struts2Diagram>
+

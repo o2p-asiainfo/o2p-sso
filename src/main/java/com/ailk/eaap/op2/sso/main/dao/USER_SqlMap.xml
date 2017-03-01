@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="User" >
+  <resultMap id="map_UserResult" class="com.linkage.npsoa.model.User" >
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="ROLE_ID" property="roleId" jdbcType="DECIMAL" />
+    <result column="role_NAME" property="roleName" jdbcType="VARCHAR" />
+    <result column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
+    <result column="ZH_NAME" property="zhName" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="CITY_ID" property="cityId" jdbcType="DECIMAL" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="DECIMAL"/>
+  </resultMap>
+  
+  <sql id="example_Where_Clause" >
+    <iterate property="oredCriteria" conjunction=") or (" prepend="and" removeFirstPrepend="iterate" open="( (" close=") )" >
+      <iterate prepend="and" property="oredCriteria[].criteriaWithoutValue" conjunction="and" >
+        $oredCriteria[].criteriaWithoutValue[]$
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithSingleValue" conjunction="and" >
+        $oredCriteria[].criteriaWithSingleValue[].condition$
+          #oredCriteria[].criteriaWithSingleValue[].value#
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithOrValue" conjunction="or" open="(" close=")" >
+        $oredCriteria[].criteriaWithOrValue[].condition$
+          #oredCriteria[].criteriaWithOrValue[].value#
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithExistsValue" conjunction="and" >
+        exists ( $oredCriteria[].criteriaWithExistsValue[].condition$
+          #oredCriteria[].criteriaWithExistsValue[].value# )
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithInValue" conjunction="and" >
+        in ( $oredCriteria[].criteriaWithInValue[].condition$
+          #oredCriteria[].criteriaWithInValue[].value# )
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithListValue" conjunction="and" >
+        $oredCriteria[].criteriaWithListValue[].condition$
+        <iterate property="oredCriteria[].criteriaWithListValue[].values" open="(" close=")" conjunction="," >
+          #oredCriteria[].criteriaWithListValue[].values[]#
+        </iterate>
+      </iterate>
+      <iterate prepend="and" property="oredCriteria[].criteriaWithBetweenValue" conjunction="and" >
+        $oredCriteria[].criteriaWithBetweenValue[].condition$
+        #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+        #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+      </iterate>
+    </iterate>
+  </sql>
+  <insert id="insert" parameterClass="com.linkage.npsoa.model.User" >
+    <selectKey resultClass="java.lang.Integer" keyProperty="userId" >
+      SELECT seq_sys.nextval FROM DUAL
+    </selectKey>
+    insert into CS_USER (USER_ID, ROLE_ID, LOGIN_NAME, ZH_NAME, PHONE, EMAIL, MOBILE, ADDRESS,
+      CITY_ID, PASSWORD)
+    values (#userId:DECIMAL#, #roleId:DECIMAL#, #loginName:VARCHAR#, #zhName:VARCHAR#,
+      #phone:VARCHAR#, #email:VARCHAR#, #mobile:VARCHAR#, #address:VARCHAR#, #cityId:DECIMAL#,
+      #password:VARCHAR#)
+  </insert>
+ <select id="selectPageByExample" resultMap="map_UserResult" parameterClass="com.linkage.npsoa.model.UserExample" >
+    select USER_ID, ROLE_ID, role_name,LOGIN_NAME, ZH_NAME, PHONE, EMAIL, MOBILE, ADDRESS,STATUS, CITY_ID, PASSWORD,city_name
+    from (select my_table.*,rownum my_rownum from ( 
+      select t.USER_ID,
+                       t.ROLE_ID,
+                       t.LOGIN_NAME,
+                       t.ZH_NAME,
+                       t.PHONE,
+                       t.EMAIL,
+                       t.MOBILE,
+                       t.ADDRESS,
+                       t.CITY_ID,
+                       t.PASSWORD,
+                       t.STATUS,
+                       r.role_name,
+                       j.city_name
+                  from CS_USER t, GIS_CITY j,cs_role r
+                 where t.sys_flag = 0 and j.city_id(+) = t.city_id 
+                 and t.role_id = r.role_id(+) 
+    <isParameterPresent > 
+      <include refid="User.example_Where_Clause" />
+      <isNotNull property="orderByClause" >
+        order by $orderByClause$
+      </isNotNull>
+    </isParameterPresent>
+    )my_table where rownum  <![CDATA[<=]]> #endPos# ) where my_rownum <![CDATA[>=]]> #startPos# 
+  </select>
+   <select id="selectCountByExample" resultClass="java.lang.Integer" parameterClass="com.linkage.npsoa.model.UserExample" >
+    select count(*)
+    from CS_USER t, GIS_CITY j,cs_role r
+                 where t.sys_flag = 0 and j.city_id(+) = t.city_id 
+                 and t.role_id = r.role_id(+) 
+    <isParameterPresent >
+      <include refid="User.example_Where_Clause" />
+      <isNotNull property="orderByClause" >
+        order by $orderByClause$
+      </isNotNull>
+    </isParameterPresent>
+  </select>
+</sqlMap>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="default" location="38,10" size="225,108">
+    <action name="pageNotFund" location="65,57" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="err404.html" />
+      </result>
+    </action>
+  </package>
+  <webResource name="err404.html" path="/err404.html" location="128,205" size="150,55" />
+  <include file="struts-comm-package.xml" location="302,485" size="150,30" />
+  <include file="eaap-op2-sso-main-struts.xml" location="10,380" size="150,30" />
+  <include file="eaap-op2-sso-login-struts.xml" location="290,380" size="150,30" />
+  <include file="eaap-op2-sso-password-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysDept-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysCustomer-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysFunction-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysRole-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysRoleFunction-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysCustomerRole-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysDeptRole-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysPersonRight-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-sysPerson-struts.xml" location="0,0" size="0,0" />
+  <include file="eaap-op2-sso-user-struts.xml" location="12,485" size="150,30" />
+</Struts2Diagram>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tenant">
+	 
+	 <select id="getTenant" parameterClass="com.ailk.eaap.op2.bo.Tenant" resultClass="com.ailk.eaap.op2.bo.Tenant">
+	 	SELECT tenant_id tenantId,name name,code code,logo logo,country country,province province,
+	 		language language,zip_code zipCode,contract_num contractNum,currency currency,status status,
+	 		time_zone timeZone,theme theme,
+	 		date_format(create_dt,'%Y-%m-%d %H:%i:%s') createDt,
+	 		date_format(start_dt,'%Y-%m-%d %H:%i:%s') startDt,
+	 		date_format(end_dt,'%Y-%m-%d %H:%i:%s') endDt
+	 	FROM Tenant
+  		<dynamic prepend="where">
+	      <isNotNull prepend="and" property="tenantId"> TENANT_ID=#tenantId#</isNotNull>
+	      <isNotNull prepend="and" property="code"> CODE=#code#</isNotNull>
+	      <isNotNull prepend="and" property="status"> STATUS=#status#</isNotNull>
+	    </dynamic>
+	 </select>
+	 
+	 
+	 
+</sqlMap>

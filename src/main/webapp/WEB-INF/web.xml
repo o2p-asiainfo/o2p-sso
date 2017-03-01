@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+ 	<context-param>
+		<description>配置spring读取的xml文件，param-name是spring规定，spring自动加载以下内容</description>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath*:spring/**/eaap-op2-sso-*spring.xml
+			classpath*:eaap*spring.xml
+			classpath*:o2p-session-spring.xml
+			classpath*:o2p-sso-session-userMgr-spring.xml
+			classpath*:o2p-sso-session-scheduled-spring.xml
+		</param-value>
+	</context-param>
+	<context-param>
+		<description>配置spring中webAppRootDey</description>
+		<param-name>webAppRootKey</param-name>
+		<param-value>eaap_sso</param-value>
+<!--		<param-value>eaap_sso_partner</param-value>-->
+	</context-param>
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/log4j.properties</param-value>
+	</context-param>
+     
+     
+       <!-- 加载项目application参数 --> 
+	<context-param>
+		<!--样式主题，取/resource/目录下哪一主题的样式-->
+		<param-name>contextStyleTheme</param-name>
+		<param-value>orange</param-value>
+<!--		<param-value>blue</param-value>-->
+	</context-param>
+	<context-param>
+		<!--本项目专用图片目录，取/resource/styleTheme/images/目录下哪一个项目专用目录-->
+		<param-name>contextStyleSpecial</param-name>
+<!--			<param-value>supermusic</param-value>-->
+		    <param-value>orange</param-value>
+<!--		<param-value>un</param-value>  -->
+<!--		<param-value>tel</param-value>-->
+<!--			<param-value>ailk</param-value>  -->
+	</context-param>
+	<!-- 菜单归属于哪个系统  -->
+	<context-param>
+		<param-name>contextMenuBelongto</param-name>
+		<param-value>1</param-value>
+	</context-param>
+	
+	<listener>
+		<listener-class>com.ailk.eaap.op2.sso.framework.context.ContextHolderListener</listener-class>
+	</listener>
+ 
+<!--		<listener>-->
+<!--			<listener-class>org.apache.axis.transport.http.AxisHTTPSessionListener</listener-class>-->
+<!--		</listener>-->
+	
+<!--		<servlet>-->
+<!--			<servlet-name>AxisServlet</servlet-name>-->
+<!--			<servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>-->
+<!--		</servlet>-->
+	
+<!--		<servlet>-->
+<!--			<servlet-name>AdminServlet</servlet-name>-->
+<!--			<servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>-->
+<!--			<load-on-startup>100</load-on-startup>-->
+<!--		</servlet>-->
+	
+<!--		<servlet-mapping>-->
+<!--			<servlet-name>AxisServlet</servlet-name>-->
+<!--			<url-pattern>/servlet/AxisServlet</url-pattern>-->
+<!--		</servlet-mapping>-->
+	
+<!--		<servlet-mapping>-->
+<!--			<servlet-name>AxisServlet</servlet-name>-->
+<!--			<url-pattern>/services/*</url-pattern>-->
+<!--		</servlet-mapping>-->
+<!--	-->
+<!--		<servlet-mapping>-->
+<!--			<servlet-name>AxisServlet</servlet-name>-->
+<!--			<url-pattern>*.jws</url-pattern>-->
+<!--		</servlet-mapping>-->
+	
+	
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	<!--
+	<filter>  
+        <filter-name>securityFilter</filter-name>  
+        <filter-class>com.ailk.eaap.o2p.common.interceptor.SecurityFilter</filter-class>  
+    </filter>  
+    <filter-mapping>  
+        <filter-name>securityFilter</filter-name>  
+        <url-pattern>/*</url-pattern>  
+    </filter-mapping>
+	<filter>  
+        <filter-name>customCookieFilter</filter-name>  
+        <filter-class>com.ailk.eaap.o2p.common.interceptor.CustomCookieFilter</filter-class>  
+    </filter>  
+    <filter-mapping>  
+        <filter-name>customCookieFilter</filter-name>  
+        <url-pattern>/*</url-pattern>  
+    </filter-mapping>-->
+    <!-- -->
+    
+	<filter>
+		<description>租户过滤器</description>
+		<filter-name>TenantFilter</filter-name>
+		<filter-class>com.ailk.eaap.op2.sso.main.util.TenantFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>TenantFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<description>自定义Session</description>
+		<filter-name>O2pSessionRepositoryFilter</filter-name>
+		<filter-class>com.asiainfo.integration.o2p.session.web.http.O2pSessionRepositoryFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>O2pSessionRepositoryFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> 
+	
+	
+	<filter>
+		<description>服务容器字符集设置 URIEncoding="GBK" tomcat server.xml Connector 节点 jboss server.xml Connector 节点</description>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>com.linkage.rainbow.ui.filter.SetCharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+
+	<!--  struts升级后不能用，有告警
+	<filter>
+		<filter-name>struts-cleanup</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ActionContextCleanUp</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>struts-cleanup</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> 
+	-->
+	
+<!--	<filter>-->
+<!--		<description>登录过滤器</description>-->
+<!--		<filter-name>LoginFilter</filter-name>-->
+<!--		new filter-->
+<!--		<filter-class>com.ailk.eaap.op2.loginFilter.filter.LoginFilter</filter-class>-->
+<!--		old UAP filter-->
+<!--		<filter-class>com.ailk.eaap.op2.sso.framework.util.LoginFilter</filter-class>-->
+<!--		<init-param>-->
+<!--			<param-name>loginUrl</param-name>-->
+<!--			<param-value>http://sso.shtesteop.com:9999/EAAP_SSO/ssoIntercept.jsp</param-value>-->
+<!--			<param-value>../ssoIntercept.jsp</param-value>-->
+<!--		</init-param>-->
+<!--	</filter>-->
+<!--	<filter-mapping>-->
+<!--	 	<filter-name>LoginFilter</filter-name>-->
+<!--	  	<url-pattern>*.jsp</url-pattern>-->
+<!--	</filter-mapping>-->
+<!--	<filter-mapping>-->
+<!--	 	<filter-name>LoginFilter</filter-name>-->
+<!--	  	<url-pattern>*.html</url-pattern>-->
+<!--	</filter-mapping>-->
+<!--	<filter-mapping>-->
+<!--	 	<filter-name>LoginFilter</filter-name>-->
+<!--	  	<url-pattern>*.shtml</url-pattern>-->
+<!--	</filter-mapping>-->
+	
+	<filter>
+		<description>Struts2 分发过滤器</description>
+		<filter-name>Struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+		<init-param>
+		     <param-name>struts.action.extension</param-name>
+		     <param-value>shtml</param-value>
+		</init-param>
+		<!--  
+		<init-param>
+		     <param-name>struts.enable.DynamicMethodInvocation</param-name>
+		     <param-value>false</param-value>
+		</init-param>
+		-->
+	</filter>	
+	<filter-mapping>
+		<filter-name>Struts2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	
+	
+	
+<!-- 	<filter>   -->
+<!--         <filter-name>UrlRewriteFilter</filter-name>   -->
+<!--         <filter-class>   -->
+<!--             org.tuckey.web.filters.urlrewrite.UrlRewriteFilter   -->
+<!--         </filter-class>   -->
+<!--         <init-param>   -->
+<!--             <param-name>logLevel</param-name>   -->
+<!--             <param-value>WARN</param-value>   -->
+<!--         </init-param>   -->
+        <!-- 这里配置urlrewrite.xml文件的地址，如果和web.xml同在WEB-INF下则不需配置此项 -->  
+<!--         <init-param>   -->
+<!--             <param-name>confPath</param-name>   -->
+<!--             <param-value>/WEB-INF/classes/urlrewrite.xml</param-value>   -->
+<!--         </init-param>   -->
+<!--     </filter>   -->
+    <!-- 伪静态过滤器映射-->   
+<!--     <filter-mapping>   -->
+<!--         <filter-name>UrlRewriteFilter</filter-name>   -->
+<!--         <url-pattern>/*</url-pattern>   -->
+<!--     </filter-mapping> -->
+	
+	
+	
+	
+	
+	
+	
+	
+
+    <servlet>
+        <servlet-name>img</servlet-name>
+        <servlet-class>com.ailk.eaap.op2.sso.main.util.AuthImg</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>img</servlet-name>
+	    <url-pattern>/authImg</url-pattern>
+    </servlet-mapping>
+    
+	<servlet>
+		<description>FreeMarker中使用Struts与JSTL或其它标签</description>
+		<servlet-name>JSPSupportServlet</servlet-name>
+		<servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<security-constraint>    
+    	<web-resource-collection>
+    		<web-resource-name>sso</web-resource-name>
+     	 	<url-pattern>/*</url-pattern>   
+      		<http-method>PUT</http-method>    
+	  		<http-method>DELETE</http-method>    
+			<http-method>HEAD</http-method>    
+			<http-method>OPTIONS</http-method>    
+			<http-method>TRACE</http-method>    
+   		</web-resource-collection>    
+   		<auth-constraint>    
+   		</auth-constraint>    
+ 	</security-constraint>    
+ 	<login-config>    
+   		<auth-method>BASIC</auth-method>    
+ 	</login-config>   
+
+	<error-page>
+		<error-code>400</error-code>
+		<location>/index.jsp</location>
+	</error-page>
+	<!-- 
+	<error-page>
+		<error-code>403</error-code>
+		<location>/err403.jsp</location>
+	</error-page> 
+	-->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.htm</location>
+	</error-page>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/500.htm</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.reflect.UndeclaredThrowableException</exception-type>
+		<location>/error.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/error.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.ClassCastException</exception-type>
+		<location>/error.jsp</location>
+	</error-page>
+
+	<error-page>
+		<exception-type>java.lang.NullPointerException</exception-type>
+		<location>/error.jsp</location>
+	</error-page>
+
+	<mime-mapping>
+		<extension>css</extension>
+		<mime-type>text/css</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>xml</extension>
+		<mime-type>text/xml</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>htc</extension>
+		<mime-type>text/x-component</mime-type>
+	</mime-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+</web-app>

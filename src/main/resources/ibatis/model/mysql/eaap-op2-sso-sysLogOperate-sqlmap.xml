@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="sysLogOperate">
+	
+	<!-- 查出符合条件的全部操作日志信息	-->
+	<select id="queryAllSysLogOperate"  parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        	SELECT SLO.SYS_LOG_OPERATE_ID,SLO.SYS_PERSON_ID,SLO.FUNCTION_ID,SLO.MODEL_NAME,SLO.CLASS_NAME,SLO.METHOD_NAME,
+                   SLO.PARAM_NAME,DATE_FORMAT(SLO.OPERATE_TIME,'%Y-%m-%d %H:%i:%s') OPERATE_TIME,SLO.OP_SUM,SP.CARD_NUMBER,SP.NAME 
+              FROM SYS_LOG_OPERATE SLO, SYS_PERSON SP
+             WHERE SLO.SYS_PERSON_ID = SP.SYS_PERSON_ID
+	              <isNotEmpty prepend=" AND " property="sysPersonId">SLO.SYS_PERSON_ID = #sysPersonId#</isNotEmpty>
+	              <isNotEmpty prepend=" AND " property="minDate"> <![CDATA[ SLO.OPERATE_TIME>=STR_TO_DATE(#minDate#, '%Y-%m-%d %H:%i:%s') ]]> </isNotEmpty>
+	              <isNotEmpty prepend=" AND " property="maxDate"> <![CDATA[ SLO.OPERATE_TIME<=STR_TO_DATE(#maxDate#, '%Y-%m-%d %H:%i:%s') ]]> </isNotEmpty>
+          ORDER BY SLO.SYS_LOG_OPERATE_ID DESC
+             limit #pro_mysql#,#page_record#
+	</select>
+	
+	<!-- 查询出符合条件的数据总量 -->
+	<select id="queryCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM SYS_LOG_OPERATE SLO, SYS_PERSON SP
+			WHERE SLO.SYS_PERSON_ID = SP.SYS_PERSON_ID
+			  <isNotEmpty prepend=" AND " property="sysPersonId">SLO.SYS_PERSON_ID = #sysPersonId#</isNotEmpty>
+              <isNotEmpty prepend=" AND " property="minDate"> <![CDATA[ SLO.OPERATE_TIME>=STR_TO_DATE(#minDate#, '%Y-%m-%d %H:%i:%s') ]]> </isNotEmpty>
+              <isNotEmpty prepend=" AND " property="maxDate"> <![CDATA[ SLO.OPERATE_TIME<=STR_TO_DATE(#maxDate#, '%Y-%m-%d %H:%i:%s') ]]> </isNotEmpty>
+	</select>
+	
+	<!-- 插入操作日志 -->
+    <insert id="insertSysLogOperate" parameterClass="com.ailk.eaap.op2.sso.main.model.SysLogOperate">
+    	<selectKey resultClass="String" keyProperty="sysLogOperateId">
+			SELECT nextval('SEQ_SYS_LOG_OPERATE') FROM DUAL
+	 	</selectKey>
+    	INSERT INTO SYS_LOG_OPERATE (   
+    	<dynamic>
+    		<isNotEmpty property="sysLogOperateId">SYS_LOG_OPERATE_ID</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysPersonId">SYS_PERSON_ID</isNotEmpty>
+			<isNotEmpty prepend="," property="functionId">FUNCTION_ID</isNotEmpty> 
+			<isNotEmpty prepend="," property="modelName">MODEL_NAME</isNotEmpty>
+			<isNotEmpty prepend="," property="tableList">TABLE_LIST</isNotEmpty>
+    		<isNotEmpty prepend="," property="className">CLASS_NAME</isNotEmpty>
+			<isNotEmpty prepend="," property="methodName">METHOD_NAME</isNotEmpty>
+			<isNotEmpty prepend="," property="sqlExpr">SQL_EXPR</isNotEmpty>
+			<isNotEmpty prepend="," property="paramName">PARAM_NAME</isNotEmpty>
+    		,OPERATE_TIME 
+			<isNotEmpty prepend="," property="opType">OP_TYPE</isNotEmpty> 
+			<isNotEmpty prepend="," property="opSum">OP_SUM</isNotEmpty>
+			<isNotEmpty prepend="," property="opDesc">OP_DESC</isNotEmpty>
+			<isNotEmpty prepend="," property="tenantId">TENANT_ID</isNotEmpty>
+    	</dynamic>
+    	) VALUES ( 
+    	<dynamic>
+    		<isNotEmpty property="sysLogOperateId">#sysLogOperateId#</isNotEmpty>
+    		<isNotEmpty prepend="," property="sysPersonId">#sysPersonId#</isNotEmpty>
+			<isNotEmpty prepend="," property="functionId">#functionId#</isNotEmpty>
+			<isNotEmpty prepend="," property="modelName">#modelName#</isNotEmpty>
+			<isNotEmpty prepend="," property="tableList">#tableList#</isNotEmpty>
+    		<isNotEmpty prepend="," property="className">#className#</isNotEmpty>
+			<isNotEmpty prepend="," property="methodName">#methodName#</isNotEmpty>
+			<isNotEmpty prepend="," property="sqlExpr">#sqlExpr#</isNotEmpty>
+			<isNotEmpty prepend="," property="paramName">#paramName#</isNotEmpty>
+    		,SYSDATE() 
+			<isNotEmpty prepend="," property="opType">#opType#</isNotEmpty>
+			<isNotEmpty prepend="," property="opSum">#opSum#</isNotEmpty> 
+			<isNotEmpty prepend="," property="opDesc">#opDesc#</isNotEmpty>
+			<isNotEmpty prepend="," property="tenantId">#tenantId#</isNotEmpty>
+    	</dynamic> 
+    	 )
+    </insert>
+    
+<!--     删除 -->
+<!--    <delete id="deleteSysCustomerById" parameterClass="String">-->
+<!--    	DELETE FROM SYS_CUSTOMER SC WHERE SC.SYS_CUSTOMER_ID=#sysCustomerId#-->
+<!--    </delete>-->
+    
+</sqlMap> 

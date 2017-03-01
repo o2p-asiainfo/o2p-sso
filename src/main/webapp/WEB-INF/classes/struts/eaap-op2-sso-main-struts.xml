@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+	
+<struts>
+	<package name="main" extends="default" namespace="/main">
+		<action name="showMenu" class="com.ailk.eaap.op2.sso.main.action.MainAction" method="showMenu">
+		</action>
+		<action name="logOut" class="com.ailk.eaap.op2.sso.main.action.MainAction" method="logOut">
+			<result name="success" type="redirect">/login/login.jsp</result>
+		</action>
+		<action name="indexForm" class="com.ailk.eaap.op2.sso.main.action.MainAction" method="indexForm">
+			<result name="success" >index.jsp</result>
+		</action>
+		<action name="verifyUser" class="com.ailk.eaap.op2.sso.main.action.MainAction" method="verifyUser">
+		</action>
+		
+		
+<!--		<action name="index" class="com.ailk.eaap.op2.sso.main.action.MainAction" method="showLeftMain">-->
+<!--			<result name="success">main/index.jsp</result> -->
+<!--		</action>-->
+<!--		<action name="index" class="com.ailk.eaap.op2.sso.main.action.MainAction" method="showMenuAndChildrenMenus">-->
+<!--		</action>-->
+
+
+<!--		<action name="index" class="com.ailk.eaap.op2.sso.main.action.MainAction" method="redirectSendTicketToLocalSystem">-->
+<!--		</action>-->
+
+
+<!--		<action name="list" class="com.ailk.eaap.op2.sso.main.action.UserAction" method="list">-->
+<!--		</action>-->
+<!--		<action name="searchRoleList" class="com.ailk.eaap.op2.sso.main.action.SysRoleAction" method="searchRoleList">-->
+<!--		</action>-->
+<!--		<action name="searchDeptList" class="com.ailk.eaap.op2.sso.main.action.SysDeptAction" method="searchDeptList">-->
+<!--		</action>-->
+<!--		<action name="makeCode" class="com.ailk.eaap.op2.sso.main.action.MakeCodeAction">-->
+<!--			<result></result>-->
+<!--		</action>-->
+<!--		<action name="*" >-->
+<!--			<result>{1}.jsp</result>-->
+<!--		</action>-->
+	</package>
+	
+</struts>
